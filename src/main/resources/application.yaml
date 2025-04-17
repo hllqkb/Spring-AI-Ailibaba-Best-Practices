@@ -1,0 +1,14 @@
+
+spring:
+  application:
+    name: heima-ai
+  ai:
+    openai:
+      chat:
+        options:
+          model: deepseek-chat
+
+      api-key: ${OPENAI_API_KEY}
+      base-url: https://api.deepseek.com
+server:
+  port: 8088
