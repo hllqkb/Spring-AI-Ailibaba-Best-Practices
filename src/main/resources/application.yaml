@@ -12,3 +12,7 @@ spring:
       base-url: https://api.deepseek.com
 server:
   port: 8088
+logging:
+  level:
+    org.springframework.ai.chat.client: DEBUG
+    com.itheima.heimaai: DEBUG
