@@ -1,18 +1,15 @@
 
 spring:
-  application:
-    name: heima-ai
   ai:
-    openai:
+    dashscope:
+      api-key: sk-8959453f76ca4902843572da31d9feb1
       chat:
         options:
-          model: deepseek-chat
-
-      api-key: ${OPENAI_API_KEY}
-      base-url: https://api.deepseek.com
+          model: deepseek-r1
+  application:
+    name: heima-ai
 server:
-  port: 8088
+  port: 8080
 logging:
   level:
-    org.springframework.ai.chat.client: DEBUG
     com.itheima.heimaai: DEBUG

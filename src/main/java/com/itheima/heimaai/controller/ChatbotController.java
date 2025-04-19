@@ -1,52 +1,34 @@
 package com.itheima.heimaai.controller;
 
+import com.alibaba.cloud.ai.dashscope.chat.DashScopeChatModel;
 import com.itheima.heimaai.repository.ChatHistoryRepository;
-import groovy.util.logging.Slf4j;
+
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
-import org.springframework.http.MediaType;
-import org.springframework.http.codec.ServerSentEvent;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
+
+import java.util.Map;
 
 @RestController
 @Slf4j
 @RequestMapping("/ai")
 public class ChatbotController {
 
-    private final ChatClient chatClient;
-    private final InMemoryChatMemory inMemoryChatMemory;
-    private final ChatHistoryRepository chatHistoryRepository;
-
-    public ChatbotController(ChatClient chatClient, InMemoryChatMemory inMemoryChatMemory, ChatHistoryRepository chatHistoryRepository) {
-        this.chatClient = chatClient;
-        this.inMemoryChatMemory = inMemoryChatMemory;
-        this.chatHistoryRepository = chatHistoryRepository;
+    private final DashScopeChatModel dashScopeChatModel;
+    public ChatbotController(ChatClient chatClient, InMemoryChatMemory inMemoryChatMemory, ChatHistoryRepository chatHistoryRepository, DashScopeChatModel dashScopeChatModel) {
+        this.dashScopeChatModel = dashScopeChatModel;
     }
 
-    @PostMapping(value = "/v1/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<ServerSentEvent<String>> streamChat(@RequestBody ChatRequest request) {
-        //用户id
-        String userId = request.userId();
-        return chatClient.prompt(request.message())
-                .advisors(new MessageChatMemoryAdvisor(inMemoryChatMemory, userId,10),new
-                        SimpleLoggerAdvisor())
-                .stream().content().map(content -> ServerSentEvent.builder(content).event("message").build())
-                //问题回答结速标识,以便前端消息展示处理
-                .concatWithValues(ServerSentEvent.builder("[DONE]").build())
-                .onErrorResume(e -> Flux.just(ServerSentEvent.builder("Error: " + e.getMessage()).event("error").build()));
+    @GetMapping("/chat1/{prompt}")
+    public String chat1(@PathVariable("prompt") String prompt) {
+        ChatResponse response = dashScopeChatModel.call(new Prompt(prompt));
+        if(!response.getResults().isEmpty()){
+            Map<String,Object> metadata = response.getResults().get(0).getOutput().getMetadata();
+            log.info("metadata:{}",metadata.get("reasoningContent"));
+        }
+        return response.getResult().getOutput().getContent();
     }
-    record ChatRequest(String userId, String message) {
-    }
-    @PostMapping(value = "/chat",produces="text/html;charset=UTF-8")
-    public Flux<String> streamChat1(@RequestParam("prompt") String prompt,@RequestParam("chatId") String chatId) {
-        chatHistoryRepository.save("chat",chatId);
-        return chatClient.prompt()
-                .advisors(a->a.param(AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY,chatId))
-                .user(prompt).stream().content();
-    }
-
 }
