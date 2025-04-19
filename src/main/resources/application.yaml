@@ -1,15 +1,22 @@
-
-spring:
-  ai:
-    dashscope:
-      api-key: sk-8959453f76ca4902843572da31d9feb1
-      chat:
-        options:
-          model: deepseek-r1
-  application:
-    name: heima-ai
 server:
   port: 8080
-logging:
-  level:
-    com.itheima.heimaai: DEBUG
+spring:
+  datasource:
+    username: postgres
+    password: 123456
+    url: jdbc:postgresql://localhost/spring-ai-best-practices
+  ai:
+    openai:
+      api-key: sk-JJHRH4tZwO7vZ21p5b14104c78424c4a9bA036Da75Bb1f86
+      base-url: https://api.gpt.ge
+      chat:
+        options:
+          model: gpt-4-turbo-2024-04-09
+          # 温度越高，回答比较有创新性，但是准确率会下降
+          temperature: 0.4f
+  application:
+    name: spring-ai
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
