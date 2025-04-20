@@ -7,13 +7,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * @Project: me.pgthinker.entity
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
- * @Date: 2025/3/20 21:52
- * @Description:
- */
 @Data
 public class BaseEntity implements Serializable {
 

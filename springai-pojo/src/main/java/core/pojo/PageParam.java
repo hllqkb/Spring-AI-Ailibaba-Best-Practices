@@ -2,13 +2,6 @@ package core.pojo;
 
 import lombok.Data;
 
-/**
- * @Project: me.pgthinker.core.pojo
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
- * @Date: 2025/3/30 17:12
- * @Description:
- */
 @Data
 public class PageParam {
 
