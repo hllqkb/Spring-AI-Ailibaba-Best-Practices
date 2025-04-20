@@ -13,9 +13,10 @@ spring:
         table-name: vector_store_1536
         remove-existing-vector-store-table: false
   datasource:
-    username: postgres
-    password: 123456
-    url: jdbc:postgresql://localhost/springaialibaba
+
+    username: admin
+    password: admin
+    url: jdbc:postgresql://localhost:5433/springaialibaba
 
 # MinIO
 minio:

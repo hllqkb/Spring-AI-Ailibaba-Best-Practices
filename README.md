@@ -45,7 +45,9 @@ springai-service:子模块，存放核心类、接口，Controller, Service, Map
 
 [Docker部署Minio（详细步骤）_minio docker部署-CSDN博客](https://blog.csdn.net/Keep__Me/article/details/135999640)
 
-[PostgreSQL向量数据插件--pgvector安装（附PostgreSQL安装）-CSDN博客](https://blog.csdn.net/m0_62627802/article/details/135027327)
+安装pgvector & postgresql直接运行docker文件夹下面的docker-compose.yml文件即可
+
+~~[利用Docker来安装pgvector & postgresql,及使用注意事项,排坑](https://www.bgegao.com/2024/10/3138.html)~~
 
 ### 启动前端
 
