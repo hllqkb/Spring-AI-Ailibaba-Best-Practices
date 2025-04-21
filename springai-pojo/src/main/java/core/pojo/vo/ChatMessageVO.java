@@ -40,7 +40,7 @@ public class ChatMessageVO implements Serializable {
     private String role;
     //前端展示聊天引用了什么资源
     @ApiModelProperty(value = "资源ID")
-    private String resourceIds;
+    private List<String> resourceIds;
     //连表查询时使用
     @ApiModelProperty(value = "资源列表")
     private List<ResourceVO> resources;

@@ -2,6 +2,8 @@ package com.springai.springai.controller;
 
 import com.springai.springai.service.ChatService;
 import core.pojo.vo.ChatRequestVO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
@@ -17,10 +19,12 @@ import reactor.core.publisher.Flux;
 @RestController
 @RequestMapping("/ai")
 @RequiredArgsConstructor
+@ApiModel(value = "Ai对话接口")
 public class ChatController {
 
 	private final ChatService chatService;
 
+	@ApiModelProperty(value = "对话接口", notes = "接受前端的请求，调用chatService的chat方法，返回Flux<ChatResponse>")
 	@PostMapping(value = "/chat/unify", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Generation> unifyChat(@RequestBody ChatRequestVO chatRequestVO) {
 		//接受前端的请求，调用chatService的unifyChat方法，返回Flux<Generation>
