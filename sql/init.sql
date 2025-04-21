@@ -183,7 +183,7 @@ COMMENT ON COLUMN chat_message.deleted IS '是否被逻辑删除（软删除）'
 
 -- 创建对话表
 CREATE TABLE chat_conversation (
-                                   id          TEXT PRIMARY KEY,
+                                   id           BIGSERIAL PRIMARY KEY,
                                    title       TEXT   NOT NULL,
                                    user_id     BIGINT NOT NULL,
                                    create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

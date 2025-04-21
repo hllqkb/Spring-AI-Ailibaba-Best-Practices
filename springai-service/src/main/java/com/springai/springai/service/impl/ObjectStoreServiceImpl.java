@@ -25,7 +25,6 @@ import java.util.List;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class ObjectStoreServiceImpl  implements ObjectStoreService {
 
     private final com.springai.springai.config.MinioProperties minioProperties;

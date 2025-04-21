@@ -1,11 +1,12 @@
 package com.springai.springai.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.springai.springai.mapper.DocumentEntityMapper;
 import com.springai.springai.mapper.OriginFileSourceMapper;
 import com.springai.springai.service.LLMService;
 import com.springai.springai.service.OriginFileService;
-import com.springai.springai.utils.SecurityFrameworkUtil;
+import com.springai.springai.utils.SaTokenUtil;
 import core.common.CoreCode;
 import core.exception.BusinessException;
 import core.pojo.entity.DocumentEntity;
@@ -47,7 +48,7 @@ import java.util.UUID;
 public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, OriginFileSource> implements OriginFileService{
     private final ObjectStoreService objectStoreService;
     private final DocumentEntityMapper documentEntityMapper;
-
+    private final SaTokenUtil saTokenUtil;
     private final TokenTextSplitter tokenTextSplitter;
 
     private final LLMService llmService;
@@ -123,7 +124,7 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
         List<Document> splitDocumentList = tokenTextSplitter.split(rawDocumentList);
         List<Document> hasMetaDocumentList = splitDocumentList.stream().map(item -> {
             Map<String, Object> metadata = item.getMetadata();
-            metadata.put("user_id", SecurityFrameworkUtil.getCurrUserId());
+            metadata.put("user_id", StpUtil.getLoginIdAsLong());
             metadata.put("knowledge_base_id", knowledgeId);
             metadata.put("document_id", documentEntity.getId());
             return new Document(item.getText(), metadata);
@@ -171,7 +172,7 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
         return originFileResource;
     }
     private String objectNameWithUserId(String filename) {
-        SystemUser loginUser = SecurityFrameworkUtil.getLoginUser();
+        SystemUser loginUser = saTokenUtil.getLoginUser();
         return loginUser.getId() + "/" + UUID.randomUUID().toString().replace("-", "") + "-" + filename;
     }
 
