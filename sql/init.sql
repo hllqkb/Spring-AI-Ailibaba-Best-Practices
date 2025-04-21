@@ -153,7 +153,7 @@ COMMENT ON COLUMN origin_file_source.deleted IS '是否被逻辑删除（软删�
 
 -- 创建对话消息表
 CREATE TABLE chat_message (
-                              id              TEXT PRIMARY KEY,
+                              id              BIGSERIAL PRIMARY KEY,
                               conversation_id TEXT    NOT NULL,
                               message_no      INT     NOT NULL,
                               has_media       BOOLEAN NOT NULL,

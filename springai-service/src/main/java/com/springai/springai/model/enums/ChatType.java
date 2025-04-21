@@ -16,7 +16,7 @@ public enum ChatType {
     private final String value;
     public static ChatType parse(String value){
         return switch (value){
-            case "simple" -> ChatType.SIMPLE_RAG;
+            case "simple" -> ChatType.SIMPLE;
             case "simpleRAG" -> ChatType.SIMPLE_RAG;
             case "multimodel" -> ChatType.MULTIMODEL_RAG;
             case "multimodelRAG" -> ChatType.MULTIMODEL_RAG;

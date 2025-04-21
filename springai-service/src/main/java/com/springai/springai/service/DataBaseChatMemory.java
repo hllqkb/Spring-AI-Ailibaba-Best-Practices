@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import static org.springframework.ai.chat.messages.AbstractMessage.MESSAGE_TYPE;
 
@@ -46,6 +47,10 @@ public class DataBaseChatMemory implements ChatMemory {
         for (int i = 0; i < messages.size(); i++) {
             Message message = messages.get(i);
             ChatMessage chatMessage = new ChatMessage();
+            //自增
+//            chatMessage.setId(UUID.randomUUID().toString());
+            //设置消息内容
+            chatMessage.setContent(message.getText());
             //设置对话编号
             chatMessage.setConversationId(conversationId);
             //设置消息编号

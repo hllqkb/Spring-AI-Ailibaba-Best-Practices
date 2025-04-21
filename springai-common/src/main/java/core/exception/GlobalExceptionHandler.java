@@ -11,22 +11,26 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * @Project: me.pgthinker.core.exception
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
- * @Date: 2025/3/30 17:08
- * @Description:
- */
 @RestControllerAdvice
 @Slf4j
-@ControllerAdvice
 public class GlobalExceptionHandler {
-
 	@ExceptionHandler(NotLoginException.class)
-	public ResponseEntity<String> handleNotLoginException(NotLoginException e) {
-		return new ResponseEntity<>("未能读取到有效 token", HttpStatus.UNAUTHORIZED);
-//		return new ResponseEntity<String>(ResultUtils.error(CoreCode.NOT_LOGIN, e.getMessage()), null, 401);
+	public ResponseEntity<String> handleNotLoginException(NotLoginException nle) {
+		String message = "";
+		if (nle.getType().equals(NotLoginException.NOT_TOKEN)) {
+			message = "未提供 Token";
+		} else if (nle.getType().equals(NotLoginException.INVALID_TOKEN)) {
+			message = "Token 无效";
+		} else if (nle.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
+			message = "Token 已过期，请重新登录";
+		} else if (nle.getType().equals(NotLoginException.BE_REPLACED)) {
+			message = "您的账户已在另一台设备上登录，如非本人操作，请立即修改密码";
+		} else if (nle.getType().equals(NotLoginException.KICK_OUT)) {
+			message = "您已被系统强制下线";
+		} else {
+			message = "当前会话未登录";
+		}
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(message);
 	}
 	@ExceptionHandler(BusinessException.class)
 	public BaseResponse<?> businessExceptionHandler(BusinessException e) {

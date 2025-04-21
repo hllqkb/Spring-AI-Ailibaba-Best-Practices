@@ -52,6 +52,7 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 		ChatConversation chatConversation = new ChatConversation();
 		Long userId = StpUtil.getLoginIdAsLong();
 		chatConversation.setTitle(title);
+		chatConversation.setId(chatConversationVO.getId());
 		chatConversation.setUserId(userId);
 		saveOrUpdate(chatConversation);
 		chatConversationVO.setId(chatConversation.getId());

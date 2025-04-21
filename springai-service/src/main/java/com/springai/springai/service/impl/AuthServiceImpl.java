@@ -71,26 +71,24 @@ public class AuthServiceImpl implements AuthService {
 
         @Override
         public AuthVO userInfo () {
-             if(!StpUtil.isLogin()){
-                 log.error("用户未登录");
-                 return new AuthVO();
-             }
              SystemUser systemUser = systemUserMapper.selectById(StpUtil.getLoginIdAsLong());
              AuthVO authVO = new AuthVO();
              authVO.setUsername(systemUser.getUsername());
              List<SystemRole> roles = systemUser.getRoles();
-             authVO.setRoles(roles.stream().map(SystemRole::getName).toList());
-             authVO.setToken(null);
+             if(roles==null||roles.isEmpty()){
+                 //防止空指针异常
+                 authVO.setRoles(new ArrayList<>());
+             }else {
+                 //设置角色
+                 authVO.setRoles(roles.stream().map(SystemRole::getName).toList());
+             }
+             authVO.setToken(StpUtil.getTokenValue());
              return authVO;
         }
 
     @Override
     public String logout() {
-        if(StpUtil.isLogin()){
-            StpUtil.logout();
-        }else{
-            return "用户未登录";
-        }
+        StpUtil.logout();
         return "退出成功";
     }
 
