@@ -14,4 +14,6 @@ public interface LLMService {
     ChatModel getVectorModel();
     //获取向量储存对象
     VectorStore getVectorStorage();
+
+    VectorStore getVectorStore();
 }

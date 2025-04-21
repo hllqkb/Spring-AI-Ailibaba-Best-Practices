@@ -1,9 +1,9 @@
 chat:
   # 通用对话模型
   simple:
-    base-url: https://api.example.com
-    api-key: sk-xxx
-    model: deepseek-v3-250324
+    base-url: https://aiproxy.bja.sealos.run
+    api-key: sk-8HgqJuIRsv7br3MJ300b14232d084a6c82089d660122F5F2
+    model: deepseek-chat-0324
   # 超长文本对话模型
   long:
     base-url: https://api.example.com

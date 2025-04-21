@@ -121,4 +121,10 @@ public class LLMServiceImpl implements LLMService {
     public VectorStore getVectorStorage() {
         return null;
     }
+
+    @Override
+    public VectorStore getVectorStore() {
+        return null;
+    }
+
 }

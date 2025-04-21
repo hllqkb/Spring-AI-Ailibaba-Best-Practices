@@ -1,39 +1,52 @@
 package core.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.baomidou.mybatisplus.annotation.TableName;
+import core.pojo.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
-/**
- * <p>
- *
- * </p>
- *
- * @author hllqkb
- * @since 2025-04-20
- */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@TableName("document_entity")
-@ApiModel(value = "DocumentEntity对象", description = "")
-public class DocumentEntity implements Serializable {
+@EqualsAndHashCode(callSuper = true)
+@TableName(value = "document_entity")
+public class DocumentEntity extends BaseEntity {
 
-	private static final long serialVersionUID = 1L;
-
+	/**
+	 *
+	 */
 	@TableId(value = "id", type = IdType.AUTO)
 	private Long id;
 
+	/**
+	 *
+	 */
+	@TableField(value = "file_name")
 	private String fileName;
 
+	/**
+	 *
+	 */
+	@TableField(value = "path")
 	private String path;
 
+	/**
+	 * 是否存储到了向量数据库中
+	 */
+	@TableField(value = "is_embedding")
+	private Boolean isEmbedding;
+
+	/**
+	 *
+	 */
+	@TableField(value = "base_id")
 	private String baseId;
+
+	/**
+	 * 资源ID
+	 */
+	@TableField(value = "resource_id")
+	private String resourceId;
 
 }

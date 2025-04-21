@@ -213,10 +213,17 @@ CREATE TABLE knowledge_base (
                                 creator     VARCHAR(255),
                                 updater     VARCHAR(255)
 );
-
--- 创建文档实体表
-CREATE TABLE document_entity (
-                                 id        BIGSERIAL PRIMARY KEY,
-                                 file_name VARCHAR(512) NOT NULL,
-                                 path      TEXT NOT NULL,
-                                 base_id   varchar(32))
+CREATE TABLE document_entity
+(
+    id        BIGSERIAL PRIMARY KEY,
+    file_name VARCHAR(512) NOT NULL,
+    path      TEXT NOT NULL,
+    base_id   varchar(32)         NOT NULL,
+    is_embedding BOOLEAN DEFAULT FALSE,
+    resource_id varchar(64) NOT NULL ,
+    create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    update_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted     BOOLEAN               DEFAULT FALSE,
+    creator     VARCHAR(255),
+    updater     VARCHAR(255)
+);

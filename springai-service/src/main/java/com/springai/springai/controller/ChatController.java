@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
+/**
+ * @author hllqk
+ */
 @Slf4j
 @RestController
 @RequestMapping("/ai")
@@ -27,9 +30,25 @@ public class ChatController {
 	@ApiModelProperty(value = "对话接口", notes = "接受前端的请求，调用chatService的chat方法，返回Flux<ChatResponse>")
 	@PostMapping(value = "/chat/unify", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Generation> unifyChat(@RequestBody ChatRequestVO chatRequestVO) {
-		//接受前端的请求，调用chatService的unifyChat方法，返回Flux<Generation>
-		return chatService.unifyChat(chatRequestVO).map(ChatResponse::getResult)
-				.flatMapSequential(Flux::just);
+		if (chatRequestVO == null) {
+			log.error("ChatRequestVO is null");
+			return Flux.error(new IllegalArgumentException("ChatRequestVO is null"));
+		}
+		
+		return chatService.unifyChat(chatRequestVO)
+				.filter(response -> response != null && response.getResult() != null)
+				.map(ChatResponse::getResult)
+				.flatMapSequential(generation -> {
+					if (generation == null) {
+						log.warn("Received null generation from ChatResponse");
+						return Flux.empty();
+					}
+					return Flux.just(generation);
+				})
+				.onErrorResume(error -> {
+					log.error("Error in chat processing: ", error);
+					return Flux.error(error);
+				});
 	}
 
 }

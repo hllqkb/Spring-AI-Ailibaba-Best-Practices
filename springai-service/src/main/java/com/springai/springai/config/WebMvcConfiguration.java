@@ -32,6 +32,7 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 .addPathPatterns("/**")
                 .excludePathPatterns(
                         "/auth/login",
+                        "/ai/chat/unify",
                         "/user/isLogin", "/user/login", "/user/register", "/user/logout", "/swagger-ui.html", "/v2/api-docs", "/webjars/**", "/doc.html", "/swagger-resources/**", "/configuration/**", "/swagger-ui/**", "/api/**"
                 );
         // 自定义拦截器注册完成
