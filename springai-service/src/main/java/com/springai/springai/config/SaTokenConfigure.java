@@ -1,27 +1,30 @@
 package com.springai.springai.config;
 
-import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.stp.StpUtil;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-@Configuration
-public class SaTokenConfigure implements WebMvcConfigurer {
-    // 注册拦截器
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        // 注册 Sa-Token 拦截器，校验规则为 StpUtil.checkLogin() 登录校验。
-        registry.addInterceptor(new SaInterceptor(handle -> StpUtil.checkLogin()))
-                .addPathPatterns("/**")
-                .excludePathPatterns(
-                    "/auth/register",
-                    "/auth/login",
-                    "/v3/api-docs",
-                    "/swagger-ui/**",
-                    "/doc.html",
-                    "/webjars/**",
-                    "/ai/chat/**"
-                );
+@Component
+public class SaTokenConfigure implements HandlerInterceptor {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+        //判断当前拦截到的是Controller的方法还是其他资源
+        if (!(handler instanceof HandlerMethod)) {
+            //当前拦截到的不是动态方法，直接放行
+            return true;
+        }
+        //获取当前请求的Token
+        if(StpUtil.isLogin()) {
+            //如果当前用户已经登录，放行
+            return true;
+        }
+        response.setStatus(401);
+
+        return false;
+
     }
+
+
 }

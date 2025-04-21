@@ -208,12 +208,6 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-            <!-- Sa-Token -->
-            <dependency>
-                <groupId>cn.dev33</groupId>
-                <artifactId>sa-token-spring-boot3-starter</artifactId>
-                <version>${sa-token.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
