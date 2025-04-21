@@ -29,6 +29,10 @@
         <tabula.version>1.0.12</tabula.version>
         <poi.version>5.4.0</poi.version>
         <postgresql.version>42.7.3</postgresql.version>
+        <sa-token.version>1.42.0</sa-token.version>
+        <lombok.version>1.18.34</lombok.version>
+        <slf4j.version>2.0.16</slf4j.version>
+        <spring-web.version>6.1.12</spring-web.version>
     </properties>
 
     <repositories>
@@ -203,6 +207,12 @@
                 <groupId>org.apache.poi</groupId>
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
+            </dependency>
+            <!-- Sa-Token -->
+            <dependency>
+                <groupId>cn.dev33</groupId>
+                <artifactId>sa-token-spring-boot3-starter</artifactId>
+                <version>${sa-token.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

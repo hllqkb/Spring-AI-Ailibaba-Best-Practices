@@ -10,11 +10,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * @Project: me.pgthinker.core.service.objectstore
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
- * @Date: 2025/3/30 16:38
- * @Description:
+ * 对象存储服务接口
  */
 public interface ObjectStoreService {
 

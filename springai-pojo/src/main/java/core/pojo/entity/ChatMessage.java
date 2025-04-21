@@ -1,10 +1,15 @@
 package core.pojo.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -46,9 +51,12 @@ public class ChatMessage implements Serializable {
 
 	@ApiModelProperty(value = "角色")
 	private String role;
-
-	@ApiModelProperty(value = "资源ID")
-	private String resourceIds;
+	/**
+	 * TableField注解的typeHandler属性指定了JacksonTypeHandler，用于将List<String>类型字段序列化为JSON字符串，方便数据库字段映射
+	 */
+	@ApiModelProperty(value = "资源ID集合")
+	@TableField(typeHandler = JacksonTypeHandler.class)
+	private List<String> resourceIds=new ArrayList<>();
 
 	private Boolean isClean;
 

@@ -2,6 +2,7 @@ package com.springai.springai.mapper;
 
 import core.pojo.entity.ChatConversation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.mapstruct.Mapper;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author hllqkb
  * @since 2025-04-20
  */
+@Mapper
 public interface ChatConversationMapper extends BaseMapper<ChatConversation> {
 
 }

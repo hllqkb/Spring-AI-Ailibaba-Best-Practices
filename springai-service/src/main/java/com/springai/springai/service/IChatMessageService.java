@@ -2,6 +2,9 @@ package com.springai.springai.service;
 
 import core.pojo.entity.ChatMessage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.ai.chat.messages.Message;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IChatMessageService extends IService<ChatMessage> {
 
+    List<Message> toMessage(List<ChatMessage> chatMessageList);
 }

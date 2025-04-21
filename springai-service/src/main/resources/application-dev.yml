@@ -13,7 +13,7 @@ spring:
         table-name: vector_store_1536
         remove-existing-vector-store-table: false
   datasource:
-
+    driver-class-name: org.postgresql.Driver
     username: admin
     password: admin
     url: jdbc:postgresql://localhost:5433/springaialibaba

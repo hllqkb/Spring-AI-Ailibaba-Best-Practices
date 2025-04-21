@@ -2,6 +2,7 @@ package com.springai.springai.mapper;
 
 import core.pojo.entity.ChatMessage;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.mapstruct.Mapper;
 
 /**
  * <p>

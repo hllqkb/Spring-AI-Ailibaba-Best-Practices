@@ -1,56 +1,111 @@
 package core.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import com.baomidou.mybatisplus.annotation.TableName;
+import core.pojo.BaseEntity;
+import core.pojo.entity.SystemPermission;
+import core.pojo.entity.SystemRole;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
-/**
- * <p>
- * 系统用户表
- * </p>
- *
- * @author hllqkb
- * @since 2025-04-20
- */
+import java.io.Serial;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@TableName("system_user")
-@ApiModel(value = "SystemUser对象", description = "系统用户表")
-public class SystemUser implements Serializable {
+@TableName(value = "\"system_user\"")
+@EqualsAndHashCode(callSuper = true)
+public class SystemUser extends BaseEntity implements UserDetails {
 
+	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "用户id")
+	/**
+	 * 用户id
+	 */
 	@TableId(value = "id", type = IdType.AUTO)
 	private Long id;
 
-	@ApiModelProperty(value = "用户名")
+	/**
+	 * 用户名
+	 */
+	@TableField(value = "username")
 	private String username;
 
-	@ApiModelProperty(value = "密码")
+	/**
+	 * 密码
+	 */
+	@TableField(value = "password")
 	private String password;
 
-	@ApiModelProperty(value = "创建时间")
-	private LocalDateTime createTime;
+	/**
+	 * 角色
+	 */
+	@TableField(exist = false)
+	private List<SystemRole> roles;
 
-	@ApiModelProperty(value = "更新时间")
-	private LocalDateTime updateTime;
+	/**
+	 * 权限
+	 */
+	@TableField(exist = false)
+	private List<SystemPermission> permissions;
 
-	@ApiModelProperty(value = "是否删除（false-未删除，true-已删除）")
-	private Boolean deleted;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Set<GrantedAuthority> authorities = new HashSet<>();
 
-	@ApiModelProperty(value = "创建人")
-	private String creator;
+		// 角色权限：ROLE_前缀
+		if (roles != null) {
+			authorities.addAll(roles.stream()
+					.map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+					.collect(Collectors.toSet()));
+		}
 
-	@ApiModelProperty(value = "更新人")
-	private String updater;
+		// 具体权限
+		if (permissions != null) {
+			authorities.addAll(permissions.stream()
+					.map(permission -> new SimpleGrantedAuthority(permission.getName()))
+					.collect(Collectors.toSet()));
+		}
 
+		return authorities;
+	}
+
+	@Override
+	public String getUsername() {
+		return this.username;
+	}
+
+	@Override
+	public String getPassword() {
+		return this.password;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

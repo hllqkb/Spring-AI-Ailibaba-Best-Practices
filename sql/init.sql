@@ -10,7 +10,7 @@ CREATE EXTENSION IF NOT EXISTS vector;
 -- 创建系统用户表
 CREATE TABLE "system_user" (
                                id          BIGSERIAL PRIMARY KEY,
-                               username    VARCHAR(255) NOT NULL,
+                               username    VARCHAR(255) NOT NULL UNIQUE,
                                password    VARCHAR(255) NOT NULL,
                                create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                update_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

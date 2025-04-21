@@ -53,4 +53,8 @@ public class SystemRole implements Serializable {
 	@ApiModelProperty(value = "更新人")
 	private String updater;
 
+	public String getName() {
+		return this.name;
+	}
+
 }

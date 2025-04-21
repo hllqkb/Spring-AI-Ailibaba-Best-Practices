@@ -3,6 +3,7 @@ package com.springai.springai.service.impl;
 import com.springai.springai.Constant.StringConstant;
 import com.springai.springai.model.enums.ChatType;
 import com.springai.springai.service.ChatService;
+import com.springai.springai.service.DataBaseChatMemory;
 import com.springai.springai.service.LLMService;
 import core.pojo.vo.ChatMessageVO;
 import core.pojo.vo.ChatRequestVO;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final LLMService llmService;
+    private final DataBaseChatMemory databaseChatMemory;
     @Override
     public Flux<ChatResponse> unifyChat(ChatRequestVO chatRequestVO) {
         //获取前端的请求聊天类型
