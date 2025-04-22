@@ -204,7 +204,8 @@ COMMENT ON COLUMN chat_conversation.deleted IS '是否被逻辑删除（软删�
 
 -- 创建知识库表
 CREATE TABLE knowledge_base (
-                                id          varchar(32)  PRIMARY KEY       NOT NULL,
+
+                                id          BIGSERIAL PRIMARY KEY,
                                 name        varchar(100) NOT NULL,
                                 description TEXT,
                                 create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -12,9 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * <p>
- * 存储原始文件资源的表 前端控制器
- * </p>
+ * 存储聊天文件
  *
  * @author hllqkb
  * @since 2025-04-20
@@ -24,10 +22,22 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/resource")
 public class OriginFileSourceController {
     private final OriginFileService originFileService;
+    /**
+     * 上传聊天文件
+     * @param file 文件
+     * @return 上传结果
+     */
     @PostMapping(value = "/chat",headers = "Content-Type=multipart/form-data")
     public BaseResponse<String> uploadChatFile(MultipartFile file) {
         return ResultUtils.success(originFileService.uploadFile(file));
     }
+
+    /**
+     * 上传知识文件
+     * @param file
+     * @param knowledgeId
+     * @return
+     */
     @PostMapping(value="/knowledge/{knowledgeId}")
     public BaseResponse<Long> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") String knowledgeId) {
         return ResultUtils.success(originFileService.uploadFile(file, knowledgeId));

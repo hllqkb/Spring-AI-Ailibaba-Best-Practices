@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * <p>
- * 前端控制器
- * </p>
+*知识库管理
  *
  * @author hllqkb
  * @since 2025-04-20
@@ -23,22 +21,46 @@ import java.util.List;
 @RequestMapping("/knowledge")
 public class KnowledgeBaseController {
     private final KnowledgeBaseService knowledgeBaseService;
+    /**
+     * 创建知识库
+     * @param knowledgeBaseVO
+     * @return
+     */
     @PostMapping("/create")
     public BaseResponse<String> add(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.create(knowledgeBaseVO));
     }
+    /**
+     * 更新知识库
+     * @param knowledgeBaseVO
+     * @return
+     */
     @PutMapping("/update")
     public BaseResponse<String> update(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.update(knowledgeBaseVO));
     }
+    /**
+     * 删除知识库
+     * @param knowledgeBaseVO
+     * @return
+     */
     @DeleteMapping("/remove")
     public BaseResponse<Integer> delete(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.delete(knowledgeBaseVO));
     }
+    /**
+     * 获取知识库列表
+     * @return
+     */
     @GetMapping("/list")
     public BaseResponse<List<KnowLedgeBaseVO>> listKnowledgeBases() {
         return ResultUtils.success(knowledgeBaseService.listKnowledgeBases());
     }
+    /**
+     * 获取知识库详情
+     * @param knowledgeBaseVO
+     * @return
+     */
 
     @GetMapping("/simple")
     public BaseResponse<List<SimpleBaseVO>> simpleList() {

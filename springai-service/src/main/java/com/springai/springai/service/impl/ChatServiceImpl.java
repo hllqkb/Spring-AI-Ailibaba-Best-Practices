@@ -6,17 +6,24 @@ import com.springai.springai.service.ChatService;
 import com.springai.springai.service.DataBaseChatMemory;
 import com.springai.springai.service.LLMService;
 import com.springai.springai.service.OriginFileService;
+import com.springai.springai.utils.SaTokenUtil;
+import core.pojo.entity.SystemUser;
 import core.pojo.vo.ChatMessageVO;
 import core.pojo.vo.ChatRequestVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.content.Media;
-import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -24,14 +31,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.springai.springai.Constant.StringConstant.CHAT_MEDIAS;
+import static com.springai.springai.Constant.StringConstant.RAG_TOP_K;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
     private final LLMService llmService;
+    private final SaTokenUtil saTokenUtil;
     private final OriginFileService originFileService;
     private final DataBaseChatMemory databaseChatMemory;
+    @Value("classpath:prompt/RAG.txt")
+    private Resource ragPrompt;
     @Override
     public Flux<ChatResponse> unifyChat(ChatRequestVO chatRequestVO) {
         //获取前端的请求聊天类型
@@ -106,10 +117,31 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
-//               return chatResponseFlux;
-        return null;
+        ChatModel chatModel = llmService.getChatModel();
+        ChatClient chatClient = ChatClient.builder(chatModel).build();
+        //构建Prompt
+        String prompt = "";
+        try {
+            PromptTemplate promptTemplate = new PromptTemplate(ragPrompt);
+            prompt = promptTemplate.getTemplate();
+        } catch (Exception e) {
+            log.error("构建RAG对话模板失败: {}", e.getMessage());
+            return Flux.error(new RuntimeException("构建RAG对话模板失败: " + e.getMessage()));
+        }
+        //向量查询条件
+        SearchRequest searchRequest = SearchRequest.builder().topK(RAG_TOP_K)
+                .query(chatMessageVO.getContent()).filterExpression(buildBaseAccessFilter(baseIds)).build();
+        Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            user.text(chatMessageVO.getContent());
+        }).advisors(new SimpleLoggerAdvisor(),MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+                StringConstant.CHAT_MAX_LENGTH
+        ).conversationId(chatMessageVO.getConversationId()).build()
+        ,QuestionAnswerAdvisor.builder(llmService.getVectorStore()).userTextAdvise(prompt)
+                        .searchRequest(searchRequest).build()
+        ).stream().chatResponse();
+        return chatResponseFlux;
     }
-
     /**
      * 多模态RAG对话
      * @param chatMessageVO
@@ -119,5 +151,26 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
-        return null;    }
+        return null;
+    }
+    private String buildBaseAccessFilter(List<String> knowledgeBaseIds) {
+        SystemUser user = saTokenUtil.getLoginUser();
+
+        // 如果没有 ID，返回一个 false 的表达式
+        if (knowledgeBaseIds == null || knowledgeBaseIds.isEmpty()) {
+            return "knowledge_base_id in [\"___empty___\"]"; // 不让查询任何知识库
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("knowledge_base_id in [");
+        for (int i = 0; i < knowledgeBaseIds.size(); i++) {
+            if (i != 0) {
+                sb.append(",");
+            }
+            sb.append("\"").append(knowledgeBaseIds.get(i)).append("\"");
+        }
+        sb.append("]");
+        log.info("Vector Search Filter SQL: {}", sb);
+        log.info("Vector Search Filter Parameter: {}", knowledgeBaseIds);
+        return sb.toString();
+    }
 }

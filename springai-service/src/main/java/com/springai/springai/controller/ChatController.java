@@ -16,13 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 
 /**
- * @author hllqk
+ * AI对话统一接口
  */
 @Slf4j
 @RestController
 @RequestMapping("/ai")
 @RequiredArgsConstructor
-@ApiModel(value = "Ai对话接口")
 public class ChatController {
 
 	private final ChatService chatService;
