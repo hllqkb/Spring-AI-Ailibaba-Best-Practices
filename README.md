@@ -15,6 +15,7 @@
 - [x] 知识库下的附件文档删查接口：在指定知识库下，可以删除附件、查询附件。
 - [x] 对话信息接口：创建对话、查询对话信息
 - [x] 非多模态RAG对话: 指定多个知识库进行对话
+- [x] Redis缓存用户信息和查询数据
 - [ ] 多模态RAG对话
 - [x] 简单对话
 - [x] 多模态简单对话
@@ -27,19 +28,26 @@
 - [x] 知识库下附件管理界面
 - [ ] 对话界面优化
 
-springai-alibaba-best-practices:maven父工程，聚合其他子模块
-springai-common:子模块，存放公共类、工具类等。
-springai-service:子模块，存放核心类、接口，Controller, Service, Mapper等。
+## 项目结构
+
+**springai-alibaba-best-practices** : maven父工程，聚合其他子模块
+
+**springai-common** : 子模块，存放公共类、工具类等。
+
+**springai-service** : 子模块，存放核心类、接口，Controller, Service, Mapper等。
+
+**springai-bom** : 子模块，统一依赖管理
 
 
 
-## 开发
+
+
+## 部署
 
 ### 环境
 
 - node: v18
 - jdk: 17
-- minio + pgvector: [docker-compose.yml](env/docker-compose.yml)
 
 ### Docker部署相关环境
 
@@ -58,17 +66,62 @@ pnpm start
 
 ### 启动后端
 
-- 修改配置文件：`application.yml` 和 `llm.yml`
+- 修改配置文件：`application-dev.yml` 和 `llm.yml`
 
-&emsp;注意：`application.yml`配置里的`llm-dev.yml`需要改为`llm.yml`,当然也可以新建`llm-dev.yml`,在代码推送时，`llm-dev.yml`文件会被忽略:
+**application-dev.yml （）内的是要更改的**
 
 ```yaml
-spring:
-  config:
-    import: classpath:llm-dev.yml
+vectorstore:
+      pgvector:
+        initialize-schema: true
+        table-name: vector_store_1024
+        remove-existing-vector-store-table: false
+        dimensions: (写你的向量化模型的维度，默认是1024)
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: (数据库账号)
+    password: (数据库密码)
+    url: jdbc:postgresql://localhost:5433/springaialibaba
+  data:
+    redis:
+      host: localhost  # Redis服务器地址
+      port: 6379  # Redis服务器连接端口
+      password: (Redis密码) # Redis服务器连接密码（默认为空）
+      database: 0  # 0-15
+# MinIO
+minio:
+  endpoint: http://127.0.0.1:9000/
+  access-key: (Minio账号，默认为minio)
+  secret-key: (Minio密码，默认为minio123)
 ```
 
-配置application-dev.yml和llm.yml
+llm.yml
 
-- 启动`SpringAiApp`
-  :子模块，存放实体类、VO类等。
+```yaml
+chat:
+  # 通用对话模型
+  simple:
+    base-url: (ai的基础api)
+    api-key: (ai的key)
+    model: (ai模型)
+  # 超长文本对话模型
+  long:
+    base-url: https://example.com
+    api-key: sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    model: model
+  # 多模态对话模型
+  multimodal:
+    base-url: 
+    api-key: 
+    model:
+# 嵌入模型
+embedding:
+  base-url: 
+  api-key: 
+  model: 
+
+```
+
+
+
+- 最后启动`SpringAiApp`
