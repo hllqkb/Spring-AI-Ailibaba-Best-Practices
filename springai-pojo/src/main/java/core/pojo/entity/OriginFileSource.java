@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import core.service.objectstore.StorageFile;
 
 /**
  * <p>
@@ -24,7 +25,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("origin_file_source")
 @ApiModel(value = "OriginFileSource对象", description = "存储原始文件资源的表")
-public class OriginFileSource implements Serializable {
+public class OriginFileSource implements Serializable, StorageFile {
 
 	private static final long serialVersionUID = 1L;
 
