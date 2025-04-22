@@ -10,8 +10,9 @@ spring:
     vectorstore:
       pgvector:
         initialize-schema: true
-        table-name: vector_store_1536
+        table-name: vector_store_1024
         remove-existing-vector-store-table: false
+        dimensions: 1024
   datasource:
     driver-class-name: org.postgresql.Driver
     username: admin

@@ -40,27 +40,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     }
 
     /**
-     * 通过knife4j生成接口文档
-     *
-     * @return
-     */
-    @Bean
-    public Docket docket() {
-        ApiInfo apiInfo = new ApiInfoBuilder()
-                .title("SpringAI Alibaba Best Practices接口文档")
-                .version("0.0.1")
-                .description("SpringAI Alibaba Best Practices接口")
-                .build();
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo)
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("com.springai.springai.controller"))
-                .paths(PathSelectors.any())
-                .build();
-        return docket;
-    }
-
-    /**
      * 设置静态资源映射
      *
      * @param registry

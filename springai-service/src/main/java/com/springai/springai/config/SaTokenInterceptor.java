@@ -15,16 +15,16 @@ public class SaTokenInterceptor implements HandlerInterceptor {
             //当前拦截到的不是动态方法，直接放行
             return true;
         }
-        //全部放行
-        return true;
-//        //获取当前请求的Token
-//        if(StpUtil.isLogin()) {
-//            //如果当前用户已经登录，放行
-//            return true;
-//        }
-//        response.setStatus(401);
+//        //全部放行
+//        return true;
+        //获取当前请求的Token
+        if(StpUtil.isLogin()) {
+            //如果当前用户已经登录，放行
+            return true;
+        }
+        response.setStatus(401);
 
-//        return false;
+        return false;
 
     }
 

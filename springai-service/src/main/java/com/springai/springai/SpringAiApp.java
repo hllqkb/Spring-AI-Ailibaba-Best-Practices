@@ -13,6 +13,8 @@ public class SpringAiApp {
 
 		SpringApplication.run(SpringAiApp.class, args);
 		System.out.println("SpringAI启动成功");
+
+
 	}
 
 }

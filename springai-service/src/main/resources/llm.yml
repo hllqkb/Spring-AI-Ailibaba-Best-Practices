@@ -6,16 +6,16 @@ chat:
     model: deepseek-chat-0324
   # 超长文本对话模型
   long:
-    base-url: https://api.example.com
-    api-key: sk-xxx
-    model: Baichuan2-Turbo-192k
+    base-url: https://api.gpt.ge
+    api-key: sk-JJHRH4tZwO7vZ21p5b14104c78424c4a9bA036Da75Bb1f86
+    model: gemini-1.5-flash
   # 多模态对话模型
   multimodal:
-    base-url: https://api.example.com
-    api-key: sk-xxx
+    base-url: https://api.gpt.ge
+    api-key: sk-JJHRH4tZwO7vZ21p5b14104c78424c4a9bA036Da75Bb1f86
     model: gpt-4o-mini
 
 embedding:
-  base-url: https://api.example.com
-  api-key: sk-xxx
-  model: text-embedding-ada-002
+  base-url: https://api.siliconflow.cn
+  api-key: sk-jivwbgqsesocbzkggntyzjwlkvlyhuiaphesburlvyswzsfc
+  model: BAAI/bge-m3
