@@ -29,7 +29,7 @@ public class ChatConversation implements Serializable {
 
 	@ApiModelProperty(value = "信息ID，唯一标识")
 	@TableId(value = "id", type = IdType.AUTO)
-	private String id;
+	private Long id;
 
 	@ApiModelProperty(value = "标题")
 	private String title;

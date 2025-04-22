@@ -38,7 +38,7 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 	private final OriginFileService originFileService;
 	@Override
 	public ChatConversationVO getConversation(String conversationId) {
-		ChatConversation chatConversation = this.getById(conversationId);
+		ChatConversation chatConversation = this.getById(Long.parseLong(conversationId));
 		return transferConversations(List.of(chatConversation)).get(0);
 	}
 	@Transactional(rollbackFor = Exception.class)
@@ -52,10 +52,9 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 		ChatConversation chatConversation = new ChatConversation();
 		Long userId = StpUtil.getLoginIdAsLong();
 		chatConversation.setTitle(title);
-		chatConversation.setId(chatConversationVO.getId());
 		chatConversation.setUserId(userId);
 		saveOrUpdate(chatConversation);
-		chatConversationVO.setId(chatConversation.getId());
+		chatConversationVO.setId(chatConversation.getId().toString());
 		chatConversationVO.setTitle(title);
 		chatConversationVO.setCreateTime(chatConversation.getCreateTime());
 		chatConversationVO.setMessages(new ArrayList<>());
@@ -79,20 +78,20 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 	}
 
 	private List<ChatConversationVO> transferConversations(List<ChatConversation> conversationList) {
-	return conversationList.stream().map(conversation -> {
-		ChatConversationVO chatConversationVO = new ChatConversationVO();
-		//把ChatConversation的属性复制到ChatConversationVO
-		BeanUtils.copyProperties(conversation, chatConversationVO);
-		//查询消息表关联的会话id的全部消息，按照创建时间排序
-		LambdaQueryWrapper<ChatMessage> queryWrapper = new LambdaQueryWrapper<>();
-		//根据会话id获取messages和根据创建时间排序
-		queryWrapper.eq(ChatMessage::getConversationId, conversation.getId()).orderByDesc(ChatMessage::getCreateTime);
-		List<ChatMessage> messageList = chatMessageMapper.selectList(queryWrapper);
+		return conversationList.stream().map(conversation -> {
+			ChatConversationVO chatConversationVO = new ChatConversationVO();
+			//把ChatConversation的属性复制到ChatConversationVO
+			BeanUtils.copyProperties(conversation, chatConversationVO);
+			//查询消息表关联的会话id的全部消息，按照创建时间排序
+			LambdaQueryWrapper<ChatMessage> queryWrapper = new LambdaQueryWrapper<>();
+			//根据会话id获取messages和根据创建时间排序
+			queryWrapper.eq(ChatMessage::getConversationId, conversation.getId().toString()).orderByDesc(ChatMessage::getCreateTime);
+			List<ChatMessage> messageList = chatMessageMapper.selectList(queryWrapper);
 			//把message转成messageVO
-		List<ChatMessageVO> chatMessageVOList = transferMessages(messageList);
-		chatConversationVO.setMessages(chatMessageVOList);
-		return chatConversationVO;
-	}).toList();
+			List<ChatMessageVO> chatMessageVOList = transferMessages(messageList);
+			chatConversationVO.setMessages(chatMessageVOList);
+			return chatConversationVO;
+		}).toList();
 	}
 
 	private List<ChatMessageVO> transferMessages(List<ChatMessage> messageList) {
@@ -106,5 +105,5 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 			chatmessagevo.setResources(resourceVOList);
 			return chatmessagevo;
 		}).toList();
-}
+	}
 }
