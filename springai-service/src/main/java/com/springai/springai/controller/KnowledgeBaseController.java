@@ -6,6 +6,8 @@ import core.common.ResultUtils;
 import core.pojo.vo.KnowLedgeBaseVO;
 import core.pojo.vo.SimpleBaseVO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +30,7 @@ public class KnowledgeBaseController {
      * @return
      */
     @PostMapping("/create")
+    @CacheEvict(value = "knowledge", allEntries = true)
     public BaseResponse<Long> add(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.create(knowledgeBaseVO));
     }
@@ -38,6 +41,7 @@ public class KnowledgeBaseController {
      * @return
      */
     @PutMapping("/update")
+    @CacheEvict(value = "knowledge", allEntries = true)
     public BaseResponse<Long> update(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.update(knowledgeBaseVO));
     }
@@ -47,6 +51,7 @@ public class KnowledgeBaseController {
      * @return
      */
     @DeleteMapping("/remove")
+    @CacheEvict(value = "knowledge", allEntries = true)
     public BaseResponse<Integer> delete(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.delete(knowledgeBaseVO));
     }
@@ -55,6 +60,7 @@ public class KnowledgeBaseController {
      * @return
      */
     @GetMapping("/list")
+    @Cacheable(value = "knowledge", key = "'list'")
     public BaseResponse<List<KnowLedgeBaseVO>> listKnowledgeBases() {
         return ResultUtils.success(knowledgeBaseService.listKnowledgeBases());
     }
@@ -64,6 +70,7 @@ public class KnowledgeBaseController {
      */
 
     @GetMapping("/simple")
+    @Cacheable(value = "knowledge", key = "'simple'")
     public BaseResponse<List<SimpleBaseVO>> simpleList() {
         return ResultUtils.success(knowledgeBaseService.getSimple());
     }

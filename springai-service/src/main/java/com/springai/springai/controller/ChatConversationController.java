@@ -9,6 +9,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +34,7 @@ public class ChatConversationController {
      * @param conversationId 对话id
      * @return 对话详情
      */
+    @Cacheable(value = "conversationDetail",key = "#conversationId")
     @ApiModelProperty(value = "获取对话详情")
     @GetMapping("/detail")
     public BaseResponse<ChatConversationVO> detail(@RequestParam("id") String conversationId) {
@@ -52,6 +55,7 @@ public class ChatConversationController {
      * @param chatConversationVO 对话详情
      *
      * */
+    @CacheEvict(value = "conversationList", allEntries = true)
     @ApiModelProperty(value = "删除对话")
     @DeleteMapping("/remove")
     public BaseResponse<Boolean> removeConversation(@RequestBody ChatConversationVO chatConversationVO) {
@@ -63,6 +67,7 @@ public class ChatConversationController {
      *
      * @return
      */
+    @Cacheable(value = "conversationList")
     @ApiModelProperty(value = "获取对话列表")
     @GetMapping ("/list")
     public BaseResponse<List<ChatConversationVO>> listConversation() {
