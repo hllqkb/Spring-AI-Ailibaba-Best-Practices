@@ -26,8 +26,11 @@ import reactor.core.publisher.Flux;
 public class ChatController {
 
 	private final ChatService chatService;
-
-	@ApiModelProperty(value = "对话接口", notes = "接受前端的请求，调用chatService的chat方法，返回Flux<ChatResponse>")
+/**
+ * 统一对话接口
+ * @param chatRequestVO 聊天请求参数
+ * @return 聊天响应
+ */
 	@PostMapping(value = "/chat/unify", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Generation> unifyChat(@RequestBody ChatRequestVO chatRequestVO) {
 		if (chatRequestVO == null) {
@@ -50,5 +53,4 @@ public class ChatController {
 					return Flux.error(error);
 				});
 	}
-
 }

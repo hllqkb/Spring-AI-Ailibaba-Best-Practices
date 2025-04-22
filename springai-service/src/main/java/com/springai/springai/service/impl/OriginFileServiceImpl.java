@@ -115,7 +115,18 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
         Resource resource;
         try{
             InputStream inputStream = objectStoreService.getFile(upload.getBucketName(), upload.getObjectName());
-            resource=new ByteArrayResource(inputStream.readAllBytes());
+            byte[] bytes = inputStream.readAllBytes();
+            resource = new ByteArrayResource(bytes) {
+                @Override
+                public String getFilename() {
+                    return file.getOriginalFilename();
+                }
+                
+                @Override
+                public String getDescription() {
+                    return "File: " + file.getOriginalFilename();
+                }
+            };
         } catch (IOException e) {
             throw new BusinessException(CoreCode.SYSTEM_ERROR, e.getMessage());
         }
@@ -127,6 +138,8 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
             metadata.put("user_id", StpUtil.getLoginIdAsLong());
             metadata.put("knowledge_base_id", knowledgeId);
             metadata.put("document_id", documentEntity.getId());
+            metadata.put("source", upload.getPath());
+            metadata.put("filename", file.getOriginalFilename());
             return new Document(item.getText(), metadata);
         }).toList();
         VectorStore vectorStore = llmService.getVectorStore();
