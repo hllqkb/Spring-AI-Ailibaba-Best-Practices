@@ -15,6 +15,7 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.content.Media;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -105,6 +106,7 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
+//               return chatResponseFlux;
         return null;
     }
 
@@ -117,6 +119,5 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
-        return null;
-    }
+        return null;    }
 }

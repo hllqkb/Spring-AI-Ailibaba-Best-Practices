@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import core.pojo.vo.KnowLedgeBaseVO;
 import core.pojo.vo.SimpleBaseVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.List;
 public class KnowledgeBaseServiceImpl extends ServiceImpl<KnowledgeBaseMapper, KnowledgeBase>
 		implements KnowledgeBaseService {
 
+	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public String create(KnowLedgeBaseVO knowledgeBaseVO) {
 		KnowledgeBase knowledgeBase = new KnowledgeBase();
@@ -33,6 +35,7 @@ public class KnowledgeBaseServiceImpl extends ServiceImpl<KnowledgeBaseMapper, K
 		return knowledgeBase.getId();
 		}
 
+		@Transactional(rollbackFor = Exception.class)
 	@Override
 	public String update(KnowLedgeBaseVO knowledgeBaseVO) {
 		KnowledgeBase knowledgeBase = new KnowledgeBase();

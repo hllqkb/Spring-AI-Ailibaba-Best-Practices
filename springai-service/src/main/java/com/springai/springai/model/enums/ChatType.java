@@ -18,7 +18,7 @@ public enum ChatType {
         return switch (value){
             case "simple" -> ChatType.SIMPLE;
             case "simpleRAG" -> ChatType.SIMPLE_RAG;
-            case "multimodel" -> ChatType.MULTIMODEL_RAG;
+            case "multimodel" -> ChatType.MULTIMODEL;
             case "multimodelRAG" -> ChatType.MULTIMODEL_RAG;
             default -> ChatType.UNKNOWN;
         };
