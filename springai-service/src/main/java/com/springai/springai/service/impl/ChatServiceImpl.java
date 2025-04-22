@@ -59,9 +59,22 @@ public class ChatServiceImpl implements ChatService {
             case SIMPLE_RAG -> this.simpleRAGChat(chatMessageVO, chatRequestVO.getKnowledgeIds());
             case MULTIMODEL -> this.multimodalChat(chatMessageVO);
             case MULTIMODEL_RAG -> this.multimodalRAGChat(chatMessageVO, chatRequestVO.getKnowledgeIds());
+            case LONGMODEL -> this.longChat(chatRequestVO);
             default -> Flux.error(new IllegalArgumentException("未知对话类型: " + chatType));
         };
 
+    }
+
+    private Flux<ChatResponse> longChat(ChatRequestVO chatMessageVO) {
+        ChatModel chatModel = llmService.getLongContextChatModel();
+        ChatClient chatClient = ChatClient.builder(chatModel).build();
+        Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            user.text(chatMessageVO.getContent());
+        }).advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+                StringConstant.CHAT_MAX_LENGTH
+        ).conversationId(chatMessageVO.getConversationId()).build()).stream().chatResponse();
+        return chatResponseFlux;
     }
 
     /**

@@ -1,9 +1,12 @@
 package com.springai.springai.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -14,6 +17,8 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.List;
+
 /**
  * 配置类，注册web层相关组件
  */
@@ -23,6 +28,9 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     @Autowired
     private SaTokenInterceptor saTokenInterceptor;
+    
+    @Autowired
+    private ObjectMapper objectMapper;
 
     protected void addInterceptors(InterceptorRegistry registry) {
         // 注册自定义拦截器
