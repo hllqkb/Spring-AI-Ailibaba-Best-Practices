@@ -69,7 +69,7 @@ public class ChatConversationController {
      */
     @Cacheable(value = "conversationList", key = "'allConversations'")
     @ApiModelProperty(value = "获取对话列表")
-    @GetMapping ("/list")
+    @GetMapping("/list")
     public BaseResponse<List<ChatConversationVO>> listConversation() {
         return ResultUtils.success(chatConversationService.listConversation());
     }

@@ -32,7 +32,7 @@ public class ChatMessageVO implements Serializable {
     private Long id;
 
     @ApiModelProperty(value = "对话ID")
-    private Long conversationId;
+    private String conversationId;
     @ApiModelProperty(value = "内容")
     private String content;
 

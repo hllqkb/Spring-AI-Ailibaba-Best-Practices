@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // lombok注解，自动生成构造方法
 public enum ChatType {
     //定义枚举值
-    UNKNOWN("unknown"),SIMPLE("simple"),SIMPLE_RAG("simpleRAG"),MULTIMODEL("multimodel"),MULTIMODEL_RAG("multimodelRAG")
+    UNKNOWN("unknown"),SIMPLE("simple"),SIMPLE_RAG("simpleRAG"),MULTIMODEL("multimodal"),MULTIMODEL_RAG("multimodalRAG")
     ,LONGMODEL("longmodel");
     //定义枚举值对应的字符串值
     private final String value;
@@ -19,8 +19,8 @@ public enum ChatType {
         return switch (value){
             case "simple" -> ChatType.SIMPLE;
             case "simpleRAG" -> ChatType.SIMPLE_RAG;
-            case "multimodel" -> ChatType.MULTIMODEL;
-            case "multimodelRAG" -> ChatType.MULTIMODEL_RAG;
+            case "multimodal", "multimodel" -> ChatType.MULTIMODEL;
+            case "multimodalRAG", "multimodelRAG" -> ChatType.MULTIMODEL_RAG;
             case "longmodel"->ChatType.LONGMODEL;
             default -> ChatType.UNKNOWN;
         };

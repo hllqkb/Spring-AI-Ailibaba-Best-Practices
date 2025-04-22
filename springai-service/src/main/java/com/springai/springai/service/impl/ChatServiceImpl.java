@@ -51,6 +51,8 @@ public class ChatServiceImpl implements ChatService {
         ChatMessageVO chatMessageVO = new ChatMessageVO();
         //把ChatMessageVO的内容拷贝到chatRequestVO中
         BeanUtils.copyProperties(chatRequestVO, chatMessageVO);
+        // 确保 conversationId 正确设置为 String 类型
+        chatMessageVO.setConversationId(String.valueOf(chatRequestVO.getConversationId()));
         //根据聊天类型，调用不同的聊天服务
         //获取枚举类型
         ChatType type = ChatType.parse(chatType);
@@ -69,11 +71,11 @@ public class ChatServiceImpl implements ChatService {
         ChatModel chatModel = llmService.getLongContextChatModel();
         ChatClient chatClient = ChatClient.builder(chatModel).build();
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
-            user.param(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, String.valueOf(chatMessageVO.getConversationId()));
             user.text(chatMessageVO.getContent());
         }).advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(chatMessageVO.getConversationId()).build()).stream().chatResponse();
+        ).conversationId(String.valueOf(chatMessageVO.getConversationId())).build()).stream().chatResponse();
         return chatResponseFlux;
     }
 
@@ -85,12 +87,18 @@ public class ChatServiceImpl implements ChatService {
     public Flux<ChatResponse> simpleChat(ChatMessageVO chatMessageVO) {
         ChatModel chatModel = llmService.getChatModel();
         ChatClient chatClient = ChatClient.builder(chatModel).build();
+        // 确保 conversationId 不为 null
+        String conversationId = chatMessageVO.getConversationId();
+        if (conversationId == null) {
+            log.error("conversationId is null");
+            return Flux.error(new IllegalArgumentException("conversationId不能为空"));
+        }
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
-            user.param(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
             user.text(chatMessageVO.getContent());
         }).advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(chatMessageVO.getConversationId()).build()).stream().chatResponse();
+        ).conversationId(conversationId).build()).stream().chatResponse();
         return chatResponseFlux;
     }
 
@@ -104,10 +112,16 @@ public class ChatServiceImpl implements ChatService {
         ChatModel chatModel = llmService.getMultimodalModel();
         List<String> resourceIds = chatMessageVO.getResourceIds();
         ChatClient chatClient = ChatClient.builder(chatModel).build();
+        // 确保 conversationId 不为 null
+        String conversationId = chatMessageVO.getConversationId();
+        if (conversationId == null) {
+            log.error("conversationId is null");
+            return Flux.error(new IllegalArgumentException("conversationId不能为空"));
+        }
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
             HashMap<String, Object> params = new HashMap<>();
             params.put(CHAT_MEDIAS, resourceIds);
-            params.put(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            params.put(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
             user.text(chatMessageVO.getContent());
             user.params(params);
             log.info("params: {}", params);
@@ -117,7 +131,7 @@ public class ChatServiceImpl implements ChatService {
             }
         }).advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(chatMessageVO.getConversationId()).build()).stream().chatResponse();
+        ).conversationId(conversationId).build()).stream().chatResponse();
         return chatResponseFlux;
     }
 
@@ -132,6 +146,12 @@ public class ChatServiceImpl implements ChatService {
     public Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds) {
         ChatModel chatModel = llmService.getChatModel();
         ChatClient chatClient = ChatClient.builder(chatModel).build();
+        // 确保 conversationId 不为 null
+        String conversationId = chatMessageVO.getConversationId();
+        if (conversationId == null) {
+            log.error("conversationId is null");
+            return Flux.error(new IllegalArgumentException("conversationId不能为空"));
+        }
         //构建Prompt
         String prompt = "";
         try {
@@ -145,11 +165,11 @@ public class ChatServiceImpl implements ChatService {
         SearchRequest searchRequest = SearchRequest.builder().topK(RAG_TOP_K)
                 .query(chatMessageVO.getContent()).filterExpression(buildBaseAccessFilter(baseIds)).build();
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
-            user.param(StringConstant.CHAT_CONSERVATION_NAME, chatMessageVO.getConversationId());
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
             user.text(chatMessageVO.getContent());
         }).advisors(new SimpleLoggerAdvisor(),MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(chatMessageVO.getConversationId()).build()
+        ).conversationId(conversationId).build()
         ,QuestionAnswerAdvisor.builder(llmService.getVectorStore()).userTextAdvise(prompt)
                         .searchRequest(searchRequest).build()
         ).stream().chatResponse();

@@ -38,7 +38,7 @@ public class ChatMessage implements Serializable {
 	private Long id;
 
 	@ApiModelProperty(value = "对话ID")
-	private Long conversationId;
+	private String conversationId;
 
 	@ApiModelProperty(value = "消息序列号")
 	private Integer messageNo;

@@ -85,7 +85,7 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 			//查询消息表关联的会话id的全部消息，按照创建时间排序
 			LambdaQueryWrapper<ChatMessage> queryWrapper = new LambdaQueryWrapper<>();
 			//根据会话id获取messages和根据创建时间排序
-			queryWrapper.eq(ChatMessage::getConversationId, conversation.getId()).orderByDesc(ChatMessage::getCreateTime);
+			queryWrapper.eq(ChatMessage::getConversationId, String.valueOf(conversation.getId())).orderByDesc(ChatMessage::getCreateTime);
 			List<ChatMessage> messageList = chatMessageMapper.selectList(queryWrapper);
 			//把message转成messageVO
 			List<ChatMessageVO> chatMessageVOList = transferMessages(messageList);
