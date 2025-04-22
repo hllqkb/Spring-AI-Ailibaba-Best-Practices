@@ -17,6 +17,7 @@
 - [x] 非多模态RAG对话: 指定多个知识库进行对话
 - [x] Redis缓存用户信息和查询数据
 - [ ] 多模态RAG对话
+- [ ] 添加语言对话的接口和图片生成的接口
 - [x] 简单对话
 - [x] 多模态简单对话
 - [ ] 文档上传时，提取文档内部图片，调用多模态模型对图片进行描述然后入库。后续对话时，将文档里的图片及描述作为上下文。
@@ -26,7 +27,9 @@
 - [x] 对话界面: 快速搭建
 - [x] 知识库管理界面
 - [x] 知识库下附件管理界面
-- [ ] 对话界面优化
+- [ ] 对话界面优化，回车发消息
+- [ ] 移动端的适配
+- [ ] ...
 
 ## 项目结构
 
@@ -63,6 +66,12 @@
 pnpm install
 pnpm start
 ```
+
+#### 使用说明
+
+1. **访问前端页面**：启动前端后，访问 [http://localhost:3000](http://localhost:3000/)。
+2. **上传知识库附件**：通过知识库管理界面上传文档或图片，系统会自动处理并存储到向量数据库。
+3. **发起对话**：在对话界面中输入问题，系统会根据知识库内容提供智能回答。
 
 ### 启动后端
 
@@ -124,4 +133,23 @@ embedding:
 
 
 
-- 最后启动`SpringAiApp`
+最后启动`SpringAiApp`或者运行下面命令
+
+```bash
+./mvnw spring-boot:run
+```
+
+## 贡献指南
+
+欢迎贡献代码！请遵循以下步骤：
+
+1. Folk项目到你的 GitHub 账号。
+2. 创建一个新的分支：`git checkout -b feature/your-feature-name`。
+3. 提交你的更改：`git commit -m "Add some feature"`。
+4. 推送到你的分支：`git push origin feature/your-feature-name`。
+5. 提交 Pull Request。
+
+### 联系方式
+
+- **GitHub**：https://github.com/hllqkb
+- **Email**：[hllqkb@google.com](mailto:hllqkb@google.com)
