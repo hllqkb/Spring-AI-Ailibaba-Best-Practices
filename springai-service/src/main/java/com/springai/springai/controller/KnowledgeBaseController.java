@@ -23,20 +23,22 @@ public class KnowledgeBaseController {
     private final KnowledgeBaseService knowledgeBaseService;
     /**
      * 创建知识库
+     *
      * @param knowledgeBaseVO
      * @return
      */
     @PostMapping("/create")
-    public BaseResponse<String> add(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
+    public BaseResponse<Long> add(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.create(knowledgeBaseVO));
     }
     /**
      * 更新知识库
+     *
      * @param knowledgeBaseVO
      * @return
      */
     @PutMapping("/update")
-    public BaseResponse<String> update(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
+    public BaseResponse<Long> update(@RequestBody KnowLedgeBaseVO knowledgeBaseVO) {
         return ResultUtils.success(knowledgeBaseService.update(knowledgeBaseVO));
     }
     /**
@@ -58,7 +60,6 @@ public class KnowledgeBaseController {
     }
     /**
      * 获取知识库详情
-     * @param knowledgeBaseVO
      * @return
      */
 

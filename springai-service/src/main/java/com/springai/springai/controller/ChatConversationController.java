@@ -64,7 +64,7 @@ public class ChatConversationController {
      * @return
      */
     @ApiModelProperty(value = "获取对话列表")
-    @PostMapping("/list")
+    @GetMapping ("/list")
     public BaseResponse<List<ChatConversationVO>> listConversation() {
         return ResultUtils.success(chatConversationService.listConversation());
     }

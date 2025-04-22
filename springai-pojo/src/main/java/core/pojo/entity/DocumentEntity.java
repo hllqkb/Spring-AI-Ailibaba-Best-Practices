@@ -38,10 +38,10 @@ public class DocumentEntity extends BaseEntity {
 	private Boolean isEmbedding;
 
 	/**
-	 *
+	 * 知识库ID
 	 */
 	@TableField(value = "base_id")
-	private String baseId;
+	private Long baseId;
 
 	/**
 	 * 资源ID

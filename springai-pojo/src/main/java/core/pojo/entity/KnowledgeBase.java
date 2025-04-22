@@ -29,7 +29,7 @@ public class KnowledgeBase implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@TableId(value = "id", type = IdType.AUTO)
-	private String id;
+	private Long id;
 
 	private String name;
 

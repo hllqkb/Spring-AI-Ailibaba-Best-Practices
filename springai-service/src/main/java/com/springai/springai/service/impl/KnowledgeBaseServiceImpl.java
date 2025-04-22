@@ -10,7 +10,6 @@ import core.pojo.vo.SimpleBaseVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class KnowledgeBaseServiceImpl extends ServiceImpl<KnowledgeBaseMapper, K
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public String create(KnowLedgeBaseVO knowledgeBaseVO) {
+	public Long create(KnowLedgeBaseVO knowledgeBaseVO) {
 		KnowledgeBase knowledgeBase = new KnowledgeBase();
 		knowledgeBase.setName(knowledgeBaseVO.getName());
 		knowledgeBase.setDescription(knowledgeBaseVO.getDescription());
@@ -37,10 +36,10 @@ public class KnowledgeBaseServiceImpl extends ServiceImpl<KnowledgeBaseMapper, K
 
 		@Transactional(rollbackFor = Exception.class)
 	@Override
-	public String update(KnowLedgeBaseVO knowledgeBaseVO) {
+	public Long update(KnowLedgeBaseVO knowledgeBaseVO) {
 		KnowledgeBase knowledgeBase = new KnowledgeBase();
 		if(knowledgeBaseVO.getId() == null){
-			return "未指定id";
+			return 0L;
 		}
 		knowledgeBase.setId(knowledgeBaseVO.getId());
 		knowledgeBase.setName(knowledgeBaseVO.getName());
@@ -68,7 +67,7 @@ public class KnowledgeBaseServiceImpl extends ServiceImpl<KnowledgeBaseMapper, K
 		List<KnowledgeBase> knowledgeBases = list();
 		return knowledgeBases.stream().map(item -> {
 			SimpleBaseVO simpleBaseVO = new SimpleBaseVO();
-			simpleBaseVO.setId(item.getId());
+			simpleBaseVO.setId(String.valueOf(item.getId()));
 			simpleBaseVO.setName(item.getName());
 			return simpleBaseVO;
 		}).toList();

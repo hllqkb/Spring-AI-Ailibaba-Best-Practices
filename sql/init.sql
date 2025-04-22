@@ -219,7 +219,7 @@ CREATE TABLE document_entity
     id        BIGSERIAL PRIMARY KEY,
     file_name VARCHAR(512) NOT NULL,
     path      TEXT NOT NULL,
-    base_id   varchar(32)         NOT NULL,
+    base_id   bigint         NOT NULL,
     is_embedding BOOLEAN DEFAULT FALSE,
     resource_id varchar(64) NOT NULL ,
     create_time TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,

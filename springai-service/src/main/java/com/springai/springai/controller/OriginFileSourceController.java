@@ -39,7 +39,7 @@ public class OriginFileSourceController {
      * @return
      */
     @PostMapping(value="/knowledge/{knowledgeId}")
-    public BaseResponse<Long> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") String knowledgeId) {
+    public BaseResponse<Long> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") Long knowledgeId) {
         return ResultUtils.success(originFileService.uploadFile(file, knowledgeId));
     }
 }

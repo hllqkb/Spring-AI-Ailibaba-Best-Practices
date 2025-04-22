@@ -19,7 +19,7 @@ public class ChatRequestVO {
 
 	private List<String> resourceIds;
 
-	private List<String> knowledgeIds;
+	private List<Long> knowledgeIds;
 
 	@NotNull(message = "对话类型不为空")
 	private String chatType;

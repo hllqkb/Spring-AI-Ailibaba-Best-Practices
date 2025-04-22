@@ -116,7 +116,7 @@ public class ChatServiceImpl implements ChatService {
      * @throws Exception
      */
     @Override
-    public Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
+    public Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds) {
         ChatModel chatModel = llmService.getChatModel();
         ChatClient chatClient = ChatClient.builder(chatModel).build();
         //构建Prompt
@@ -150,15 +150,15 @@ public class ChatServiceImpl implements ChatService {
      * @throws Exception
      */
     @Override
-    public Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds) {
+    public Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds) {
         return null;
     }
-    private String buildBaseAccessFilter(List<String> knowledgeBaseIds) {
+    private String buildBaseAccessFilter(List<Long> knowledgeBaseIds) {
         SystemUser user = saTokenUtil.getLoginUser();
 
         // 如果没有 ID，返回一个 false 的表达式
         if (knowledgeBaseIds == null || knowledgeBaseIds.isEmpty()) {
-            return "knowledge_base_id in [\"___empty___\"]"; // 不让查询任何知识库
+            return "knowledge_base_id in [0]"; // 不让查询任何知识库
         }
         StringBuilder sb = new StringBuilder();
         sb.append("knowledge_base_id in [");
@@ -166,7 +166,7 @@ public class ChatServiceImpl implements ChatService {
             if (i != 0) {
                 sb.append(",");
             }
-            sb.append("\"").append(knowledgeBaseIds.get(i)).append("\"");
+            sb.append(knowledgeBaseIds.get(i)); // 直接使用数字，不需要引号
         }
         sb.append("]");
         log.info("Vector Search Filter SQL: {}", sb);

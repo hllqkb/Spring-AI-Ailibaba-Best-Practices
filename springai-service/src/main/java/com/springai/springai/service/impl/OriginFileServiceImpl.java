@@ -91,15 +91,13 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String uploadFile(MultipartFile file) {
-        //上传文件到对象存储
-        OriginFileSource upload=this.upload(file,CHAT_BUCKET_NAME);
+        // 实现对话附件的上传逻辑
+        OriginFileSource upload = this.upload(file, CHAT_BUCKET_NAME);
         return upload.getId();
     }
 
-
-
     @Override
-    public Long uploadFile(MultipartFile file, String knowledgeId) {
+    public Long uploadFile(MultipartFile file, Long knowledgeId) {
         //上传知识库
         //先上传文件到Minio
         OriginFileSource upload=this.upload(file,KNOWLEDGE_BUCKET_NAME);

@@ -6,9 +6,9 @@ import core.pojo.vo.SimpleBaseVO;
 import java.util.List;
 
 public interface KnowledgeBaseService {
-    String create(KnowLedgeBaseVO knowledgeBaseVO);
+    Long create(KnowLedgeBaseVO knowledgeBaseVO);
 
-    String update(KnowLedgeBaseVO knowledgeBaseVO);
+    Long update(KnowLedgeBaseVO knowledgeBaseVO);
 
     Integer delete(KnowLedgeBaseVO knowledgeBaseVO);
 

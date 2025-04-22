@@ -29,14 +29,14 @@ public interface ChatService {
 	 * @param baseIds 知识库ID列表
 	 * @return
 	 */
-	Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds);
+	Flux<ChatResponse> simpleRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds);
 
 	/**
 	 * 多模态的RAG对话
 	 * @param chatMessageVO
 	 * @return
 	 */
-	Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<String> baseIds);
+	Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds);
 
 	/**
 	 * 统一接口对话

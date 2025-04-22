@@ -14,7 +14,7 @@ public interface OriginFileService extends IService<OriginFileSource> {
     //对话附件
     String uploadFile(MultipartFile file);
     //知识库附件
-    Long uploadFile(MultipartFile file, String knowledgeId);
+    Long uploadFile(MultipartFile file, Long knowledgeId);
     //id转资源Vo
     List<ResourceVO> resourcesFromIds(List<String> ids);
 }
