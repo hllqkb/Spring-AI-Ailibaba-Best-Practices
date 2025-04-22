@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 public class ChatConversationVO {
-    private String id;
+    private Long id;
     private String title;
     private LocalDateTime createTime;
     private List<ChatMessageVO> messages;

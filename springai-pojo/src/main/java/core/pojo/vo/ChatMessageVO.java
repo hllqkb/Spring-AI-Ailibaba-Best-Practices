@@ -29,10 +29,10 @@ public class ChatMessageVO implements Serializable {
 
     @ApiModelProperty(value = "信息ID，唯一标识")
     @TableId(value = "id", type = IdType.AUTO)
-    private String id;
+    private Long id;
 
     @ApiModelProperty(value = "对话ID")
-    private String conversationId;
+    private Long conversationId;
     @ApiModelProperty(value = "内容")
     private String content;
 

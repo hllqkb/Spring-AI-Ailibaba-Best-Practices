@@ -57,7 +57,7 @@ public class ChatConversationController {
      * */
     @CacheEvict(value = "conversationList", allEntries = true)
     @ApiModelProperty(value = "删除对话")
-    @DeleteMapping("/remove")
+    @PostMapping("/remove")
     public BaseResponse<Boolean> removeConversation(@RequestBody ChatConversationVO chatConversationVO) {
         return ResultUtils.success(chatConversationService.removeConversation(chatConversationVO));
     }

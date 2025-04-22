@@ -12,7 +12,7 @@ import java.util.List;
 public class ChatRequestVO {
 
 	@NotNull(message = "对话id不为空")
-	private String conversationId;
+	private Long conversationId;
 
 	@NotNull(message = "对话内容不为空")
 	private String content;
