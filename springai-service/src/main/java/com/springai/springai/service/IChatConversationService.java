@@ -18,7 +18,7 @@ public interface IChatConversationService extends IService<ChatConversation> {
 
     ChatConversationVO createConversation(ChatConversationVO chatConversationVO);
 
-    Boolean removeConversation(ChatConversationVO chatConversationVO);
+    Boolean removeConversation(Long conversationId);
 
     List<ChatConversationVO> listConversation();
 

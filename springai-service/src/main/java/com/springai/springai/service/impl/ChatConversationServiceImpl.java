@@ -66,9 +66,9 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 
 	@Transactional(rollbackFor = Exception.class)
 	@Override
-	public Boolean removeConversation(ChatConversationVO chatConversationVO) {
+	public Boolean removeConversation(Long conversationId) {
 		//删除会话
-		return removeById(chatConversationVO.getId());
+		return removeById(conversationId);
 	}
 
 	@Override

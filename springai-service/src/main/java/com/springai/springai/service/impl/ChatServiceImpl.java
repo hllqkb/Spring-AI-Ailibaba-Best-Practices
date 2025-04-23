@@ -131,7 +131,7 @@ public class ChatServiceImpl implements ChatService {
         // 确保 conversationId 不为 null
         String conversationId = chatMessageVO.getConversationId();
         if (conversationId == null) {
-            log.error("conversationId is null");
+            log.error("对话id为空");
             return Flux.error(new IllegalArgumentException("conversationId不能为空"));
         }
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
@@ -156,7 +156,7 @@ public class ChatServiceImpl implements ChatService {
         // 确保 conversationId 不为 null
         String conversationId = chatMessageVO.getConversationId();
         if (conversationId == null) {
-            log.error("conversationId is null");
+            log.error("对话id为空");
             return Flux.error(new IllegalArgumentException("conversationId不能为空"));
         }
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
@@ -190,7 +190,7 @@ public class ChatServiceImpl implements ChatService {
         // 确保 conversationId 不为 null
         String conversationId = chatMessageVO.getConversationId();
         if (conversationId == null) {
-            log.error("conversationId is null");
+            log.error("对话id为空");
             return Flux.error(new IllegalArgumentException("conversationId不能为空"));
         }
         //构建Prompt
@@ -202,7 +202,7 @@ public class ChatServiceImpl implements ChatService {
             log.error("构建RAG对话模板失败: {}", e.getMessage());
             return Flux.error(new RuntimeException("构建RAG对话模板失败: " + e.getMessage()));
         }
-        //向量查询条件
+        //向量查询条件, 这里只查询 baseIds 对应的知识库
         SearchRequest searchRequest = SearchRequest.builder().topK(RAG_TOP_K)
                 .query(chatMessageVO.getContent()).filterExpression(buildBaseAccessFilter(baseIds)).build();
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
@@ -225,11 +225,54 @@ public class ChatServiceImpl implements ChatService {
      */
     @Override
     public Flux<ChatResponse> multimodalRAGChat(ChatMessageVO chatMessageVO, List<Long> baseIds) {
-        return null;
+        ChatModel chatModel = llmService.getMultimodalModel();
+        List<String> resourceIds = chatMessageVO.getResourceIds();
+        ChatClient chatClient = ChatClient.builder(chatModel).build();
+        // 确保 conversationId 不为 null
+        String conversationId = chatMessageVO.getConversationId();
+        if (conversationId == null) {
+            log.error("对话为空");
+            return Flux.error(new IllegalArgumentException("conversationId不能为空"));
+        }
+        //构建Prompt
+        String prompt = "";
+        try {
+            PromptTemplate promptTemplate = new PromptTemplate(ragPrompt);
+            prompt = promptTemplate.getTemplate();
+        } catch (Exception e) {
+            log.error("构建RAG对话模板失败: {}", e.getMessage());
+            return Flux.error(new RuntimeException("构建RAG对话模板失败: " + e.getMessage()));
+        }
+        //向量查询条件, 这里只查询 baseIds 对应的知识库
+        SearchRequest searchRequest = SearchRequest.builder().topK(RAG_TOP_K)
+                .query(chatMessageVO.getContent()).filterExpression(buildBaseAccessFilter(baseIds)).build();
+        Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
+            HashMap<String, Object> params = new HashMap<>();
+            params.put(CHAT_MEDIAS, resourceIds);
+            params.put(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
+            user.text(chatMessageVO.getContent());
+            user.params(params);
+            log.info("params: {}", params);
+            if(resourceIds!=null&& !resourceIds.isEmpty()){
+                List<Media> medias = originFileService.formResourceIds(resourceIds);
+                user.media(medias.toArray(new Media[0]));
+            }
+        }).advisors(new SimpleLoggerAdvisor(),MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+                StringConstant.CHAT_MAX_LENGTH
+        ).conversationId(conversationId).build()
+        ,QuestionAnswerAdvisor.builder(llmService.getVectorStore()).userTextAdvise(prompt)
+                        .searchRequest(searchRequest).build()
+        ).stream().chatResponse();
+        return chatResponseFlux;
     }
-    private String buildBaseAccessFilter(List<Long> knowledgeBaseIds) {
-        SystemUser user = saTokenUtil.getLoginUser();
 
+    /**
+     * 构建知识库访问权限过滤条件
+     * @param knowledgeBaseIds
+     * @return
+     *
+     **/
+    private String buildBaseAccessFilter(List<Long> knowledgeBaseIds) {
         // 如果没有 ID，返回一个 false 的表达式
         if (knowledgeBaseIds == null || knowledgeBaseIds.isEmpty()) {
             return "knowledge_base_id in [0]"; // 不让查询任何知识库

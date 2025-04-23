@@ -24,12 +24,13 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class ChatController {
 
+	private final ChatService chatService;
+
 	/**
 	 * 调用工具类的聊天服务
 	 * @param chatRequestVO 聊天请求参数
 	 * @return 聊天响应
 	 */
-	private final ChatService chatService;
 	@PostMapping(value = "/chat/function",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Generation> getFunctionChat(@RequestBody ChatRequestVO chatRequestVO) {
 		if(chatRequestVO == null){
