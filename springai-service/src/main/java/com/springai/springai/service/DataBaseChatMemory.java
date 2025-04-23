@@ -31,6 +31,7 @@ import static org.springframework.ai.chat.messages.AbstractMessage.MESSAGE_TYPE;
 public class DataBaseChatMemory implements ChatMemory {
     private final ChatMessageMapper chatMessageMapper;
     private final IChatMessageService chatMessageService;
+    //资源缓存Map
     private Map<String, List<String>> conversationResourceMap = new ConcurrentHashMap<>();
 
     //任意情况的事务回滚
