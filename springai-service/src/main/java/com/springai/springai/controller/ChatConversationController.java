@@ -37,8 +37,12 @@ public class ChatConversationController {
     @Cacheable(value = "conversationDetail",key = "#conversationId")
     @ApiModelProperty(value = "获取对话详情")
     @GetMapping("/detail")
-    public BaseResponse<ChatConversationVO> detail(@RequestParam("id") String conversationId) {
-        return ResultUtils.success(chatConversationService.getConversation(conversationId));
+    public BaseResponse<ChatConversationVO> detail(@RequestParam("id") Long conversationId) {
+        ChatConversationVO conversation = chatConversationService.getConversation(conversationId);
+        if(conversation == null){
+            return ResultUtils.error(404,"对话不存在");
+        }
+        return ResultUtils.success(conversation);
     }
     /**
      * 创建对话

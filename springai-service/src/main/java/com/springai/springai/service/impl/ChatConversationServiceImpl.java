@@ -37,8 +37,11 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 	private final ChatMessageMapper chatMessageMapper;
 	private final OriginFileService originFileService;
 	@Override
-	public ChatConversationVO getConversation(String conversationId) {
-		ChatConversation chatConversation = this.getById(Long.parseLong(conversationId));
+	public ChatConversationVO getConversation(Long conversationId) {
+		ChatConversation chatConversation = this.getById(conversationId);
+		if(chatConversation == null){
+			return null;
+		}
 		return transferConversations(List.of(chatConversation)).get(0);
 	}
 	@Transactional(rollbackFor = Exception.class)

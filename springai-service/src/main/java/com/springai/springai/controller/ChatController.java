@@ -24,7 +24,32 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class ChatController {
 
+	/**
+	 * 调用工具类的聊天服务
+	 * @param chatRequestVO 聊天请求参数
+	 * @return 聊天响应
+	 */
 	private final ChatService chatService;
+	@PostMapping(value = "/chat/function",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+	public Flux<Generation> getFunctionChat(@RequestBody ChatRequestVO chatRequestVO) {
+		if(chatRequestVO == null){
+			return Flux.error(new IllegalArgumentException("请求参数为空"));
+		}
+		return chatService.getFunctionChat(chatRequestVO).
+				filter(response -> response != null && response.getResult() != null)
+				.map(ChatResponse::getResult)
+				.flatMapSequential(generation -> {
+					if (generation == null) {
+						log.warn("回复为空");
+						return Flux.empty();
+					}
+					return Flux.just(generation);
+				})
+				.onErrorResume(error -> {
+					log.error("聊天过程中出现错误: ", error);
+					return Flux.error(error);
+				});
+	}
 /**
  * 统一对话接口
  * @param chatRequestVO 聊天请求参数
@@ -33,8 +58,8 @@ public class ChatController {
 	@PostMapping(value = "/chat/unify", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<Generation> unifyChat(@RequestBody ChatRequestVO chatRequestVO) {
 		if (chatRequestVO == null) {
-			log.error("ChatRequestVO is null");
-			return Flux.error(new IllegalArgumentException("ChatRequestVO is null"));
+			log.error("请求参数为空");
+			return Flux.error(new IllegalArgumentException("请求参数为空"));
 		}
 		
 		return chatService.unifyChat(chatRequestVO)
@@ -42,13 +67,13 @@ public class ChatController {
 				.map(ChatResponse::getResult)
 				.flatMapSequential(generation -> {
 					if (generation == null) {
-						log.warn("Received null generation from ChatResponse");
+						log.warn("回复为空");
 						return Flux.empty();
 					}
 					return Flux.just(generation);
 				})
 				.onErrorResume(error -> {
-					log.error("Error in chat processing: ", error);
+					log.error("聊天过程中出现错误: ", error);
 					return Flux.error(error);
 				});
 	}

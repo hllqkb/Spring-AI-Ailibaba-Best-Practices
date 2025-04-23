@@ -45,4 +45,6 @@ public interface ChatService {
 	 */
 	Flux<ChatResponse> unifyChat(ChatRequestVO chatRequestVO);
 
+	Flux<ChatResponse> getFunctionChat(ChatRequestVO chatRequestVO);
+
 }

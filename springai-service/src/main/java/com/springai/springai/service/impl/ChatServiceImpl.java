@@ -6,6 +6,7 @@ import com.springai.springai.service.ChatService;
 import com.springai.springai.service.DataBaseChatMemory;
 import com.springai.springai.service.LLMService;
 import com.springai.springai.service.OriginFileService;
+import com.springai.springai.tools.WeatherTool;
 import com.springai.springai.utils.SaTokenUtil;
 import core.pojo.entity.SystemUser;
 import core.pojo.vo.ChatMessageVO;
@@ -41,6 +42,7 @@ public class ChatServiceImpl implements ChatService {
     private final SaTokenUtil saTokenUtil;
     private final OriginFileService originFileService;
     private final DataBaseChatMemory databaseChatMemory;
+    private final WeatherTool weatherTool;
     @Value("classpath:prompt/RAG.txt")
     private Resource ragPrompt;
     @Override
@@ -65,6 +67,23 @@ public class ChatServiceImpl implements ChatService {
             default -> Flux.error(new IllegalArgumentException("未知对话类型: " + chatType));
         };
 
+    }
+
+    @Override
+    public Flux<ChatResponse> getFunctionChat(ChatRequestVO chatMessageVO) {
+        ChatModel chatModel = llmService.getMultimodalModel();
+        ChatClient chatClient = ChatClient.builder(chatModel).build();
+        Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
+            user.param(StringConstant.CHAT_CONSERVATION_NAME, String.valueOf(chatMessageVO.getConversationId()));
+            user.text(chatMessageVO.getContent());
+        })
+                .tools(weatherTool)
+                .advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+                StringConstant.CHAT_MAX_LENGTH
+        ).conversationId(String.valueOf(chatMessageVO.getConversationId()))
+
+                .build()).stream().chatResponse();
+        return chatResponseFlux;
     }
 
     private Flux<ChatResponse> longChat(ChatRequestVO chatMessageVO) {
