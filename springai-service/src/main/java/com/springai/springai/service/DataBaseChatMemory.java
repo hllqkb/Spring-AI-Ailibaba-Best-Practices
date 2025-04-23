@@ -15,7 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+import static com.springai.springai.Constant.StringConstant.CHAT_MEDIAS;
 import static org.springframework.ai.chat.messages.AbstractMessage.MESSAGE_TYPE;
 
 /**
@@ -28,17 +31,18 @@ import static org.springframework.ai.chat.messages.AbstractMessage.MESSAGE_TYPE;
 public class DataBaseChatMemory implements ChatMemory {
     private final ChatMessageMapper chatMessageMapper;
     private final IChatMessageService chatMessageService;
+    private Map<String, List<String>> conversationResourceMap = new ConcurrentHashMap<>();
 
     //任意情况的事务回滚
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void add(String conversationId, List<Message> messages) {
+        log.info("messages:{}", messages);
+        log.info("params:{}", messages.get(0).getMetadata());
         //添加消息到数据库
         if (CollectionUtils.isEmpty(messages)) {
             return;
         }
-        log.info("添加消息的对话轮数：{}，消息数量：{}", conversationId, messages.size());
-        log.info("消息内容：{}", messages);
         LambdaQueryWrapper<ChatMessage> qw = new LambdaQueryWrapper<>();
         qw.eq(ChatMessage::getIsClean, false).eq(ChatMessage::getConversationId, conversationId);
         long cnt = chatMessageMapper.selectCount(qw);
@@ -56,12 +60,13 @@ public class DataBaseChatMemory implements ChatMemory {
             //设置消息编号
             chatMessage.setMessageNo((int) (cnt + i + 1));
             //设置角色
+
             chatMessage.setRole(message.getMetadata().get(MESSAGE_TYPE).toString());
             //开始添加资源
-            Object resourceObj = message.getMetadata().get(StringConstant.CHAT_MEDIAS);
-            //判断是否有资源
-            List<String> resourceList = (resourceObj instanceof List<?> list?list.stream().map(Object::toString).toList():List.of());
-            if (!resourceList.isEmpty()) {
+            //从metadata中获取CHAT_MEDIAS参数
+            List<String> resourceList = conversationResourceMap.getOrDefault(conversationId, List.of());
+            
+            if (resourceList != null && !resourceList.isEmpty()) {
                 chatMessage.setHasMedia(true);
                 chatMessage.setResourceIds(resourceList);
             } else {
@@ -83,11 +88,17 @@ public class DataBaseChatMemory implements ChatMemory {
                 .eq(ChatMessage::getIsClean, false).orderByAsc(ChatMessage::getCreateTime)
                 .last("limit " + lastN);
         List<ChatMessage> chatMessageList = chatMessageMapper.selectList(qw);
-        return chatMessageList.isEmpty() ? List.of() :chatMessageService.toMessage(chatMessageList);
+        return chatMessageList.isEmpty() ? List.of() : chatMessageService.toMessage(chatMessageList);
     }
 
     @Override
     public void clear(String conversationId) {
 
+    }
+
+    public void setConversationResources(String conversationId, List<String> resourceIds) {
+        if (resourceIds != null && !resourceIds.isEmpty()) {
+            conversationResourceMap.put(conversationId, resourceIds);
+        }
     }
 }

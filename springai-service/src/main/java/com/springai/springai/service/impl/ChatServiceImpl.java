@@ -29,6 +29,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -159,20 +160,26 @@ public class ChatServiceImpl implements ChatService {
             log.error("对话id为空");
             return Flux.error(new IllegalArgumentException("conversationId不能为空"));
         }
+        
+        // 设置conversationResources，确保DataBaseChatMemory能够获取到resourceIds
+        databaseChatMemory.setConversationResources(conversationId, resourceIds);
+        
         Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
             HashMap<String, Object> params = new HashMap<>();
             params.put(CHAT_MEDIAS, resourceIds);
             params.put(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
             user.text(chatMessageVO.getContent());
-            user.params(params);
-            log.info("params: {}", params);
             if(resourceIds!=null&& !resourceIds.isEmpty()){
                 List<Media> medias = originFileService.formResourceIds(resourceIds);
                 user.media(medias.toArray(new Media[0]));
             }
-        }).advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+            user.params(params);
+            log.info("params: {}", params);
+        })
+        .advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(conversationId).build()).stream().chatResponse();
+        ).conversationId(conversationId)
+                .build()).stream().chatResponse();
         return chatResponseFlux;
     }
 
@@ -234,6 +241,10 @@ public class ChatServiceImpl implements ChatService {
             log.error("对话为空");
             return Flux.error(new IllegalArgumentException("conversationId不能为空"));
         }
+        
+        // 设置conversationResources，确保DataBaseChatMemory能够获取到resourceIds
+        databaseChatMemory.setConversationResources(conversationId, resourceIds);
+        
         //构建Prompt
         String prompt = "";
         try {
@@ -251,13 +262,13 @@ public class ChatServiceImpl implements ChatService {
             params.put(CHAT_MEDIAS, resourceIds);
             params.put(StringConstant.CHAT_CONSERVATION_NAME, conversationId);
             user.text(chatMessageVO.getContent());
-            user.params(params);
-            log.info("params: {}", params);
             if(resourceIds!=null&& !resourceIds.isEmpty()){
                 List<Media> medias = originFileService.formResourceIds(resourceIds);
                 user.media(medias.toArray(new Media[0]));
             }
-        }).advisors(new SimpleLoggerAdvisor(),MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
+            user.params(params);
+            log.info("params: {}", params);
+        }).advisors(new SimpleLoggerAdvisor(), MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
                 StringConstant.CHAT_MAX_LENGTH
         ).conversationId(conversationId).build()
         ,QuestionAnswerAdvisor.builder(llmService.getVectorStore()).userTextAdvise(prompt)

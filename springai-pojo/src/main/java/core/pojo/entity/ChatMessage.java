@@ -1,10 +1,8 @@
 package core.pojo.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.time.LocalDateTime;
-import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -69,8 +67,11 @@ public class ChatMessage implements Serializable {
 	@ApiModelProperty(value = "是否被逻辑删除（软删除）")
 	private Boolean deleted;
 
+	//自动填充字段
+	@TableField(fill= FieldFill.INSERT)
 	private String creator;
 
+	@TableField(fill= FieldFill.INSERT_UPDATE)
 	private String updater;
 
 }
