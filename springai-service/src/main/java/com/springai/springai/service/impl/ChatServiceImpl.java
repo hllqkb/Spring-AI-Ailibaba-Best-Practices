@@ -7,6 +7,7 @@ import com.springai.springai.service.DataBaseChatMemory;
 import com.springai.springai.service.LLMService;
 import com.springai.springai.service.OriginFileService;
 import com.springai.springai.tools.WeatherTool;
+import com.springai.springai.tools.SqlQueryTool;
 import com.springai.springai.utils.SaTokenUtil;
 import core.pojo.entity.SystemUser;
 import core.pojo.vo.ChatMessageVO;
@@ -43,6 +44,7 @@ public class ChatServiceImpl implements ChatService {
     private final OriginFileService originFileService;
     private final DataBaseChatMemory databaseChatMemory;
     private final WeatherTool weatherTool;
+    private final SqlQueryTool sqlQueryTool;
     @Value("classpath:prompt/RAG.txt")
     private Resource ragPrompt;
     @Override
@@ -73,7 +75,7 @@ public class ChatServiceImpl implements ChatService {
     public Flux<ChatResponse> getFunctionChat(ChatRequestVO chatMessageVO) {
         ChatModel chatModel = llmService.getChatModel();
         ChatClient chatClient = ChatClient.builder(chatModel)
-                .defaultTools(weatherTool)
+                .defaultTools(weatherTool, sqlQueryTool)
                 .build();
         
         return chatClient.prompt()
@@ -82,13 +84,21 @@ public class ChatServiceImpl implements ChatService {
                     user.text(chatMessageVO.getContent());
                 })
                 .system("""
-                    你是一个天气查询助手。当用户询问天气时，你必须调用天气工具获取实时数据。
+                    你是一个智能助手，可以查询天气和历史对话记录。
+                    当用户询问天气时，你可以调用天气工具获取实时数据。
+                    当用户需要查看历史对话记录时，你可以调用SQL查询工具获取详细信息。
                     工具调用格式示例：
+                    天气查询：
                     {
                         "province": "四川省",
                         "city": "绵阳市"
                     }
-                    请确保使用正确的省份和城市名称。
+                    历史对话查询：
+                    {
+                        "conversationId": "123",
+                        "limit": 10
+                    }
+                    请根据用户的问题选择合适的工具。
                     """)
                 .advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory)
                         .chatMemoryRetrieveSize(StringConstant.CHAT_MAX_LENGTH)
