@@ -71,19 +71,31 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public Flux<ChatResponse> getFunctionChat(ChatRequestVO chatMessageVO) {
-        ChatModel chatModel = llmService.getMultimodalModel();
-        ChatClient chatClient = ChatClient.builder(chatModel).build();
-        Flux<ChatResponse> chatResponseFlux = chatClient.prompt().user(user -> {
-            user.param(StringConstant.CHAT_CONSERVATION_NAME, String.valueOf(chatMessageVO.getConversationId()));
-            user.text(chatMessageVO.getContent());
-        })
-                .tools(weatherTool)
-                .advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory).chatMemoryRetrieveSize(
-                StringConstant.CHAT_MAX_LENGTH
-        ).conversationId(String.valueOf(chatMessageVO.getConversationId()))
-
-                .build()).stream().chatResponse();
-        return chatResponseFlux;
+        ChatModel chatModel = llmService.getChatModel();
+        ChatClient chatClient = ChatClient.builder(chatModel)
+                .defaultTools(weatherTool)
+                .build();
+        
+        return chatClient.prompt()
+                .user(user -> {
+                    user.param(StringConstant.CHAT_CONSERVATION_NAME, String.valueOf(chatMessageVO.getConversationId()));
+                    user.text(chatMessageVO.getContent());
+                })
+                .system("""
+                    你是一个天气查询助手。当用户询问天气时，你必须调用天气工具获取实时数据。
+                    工具调用格式示例：
+                    {
+                        "province": "四川省",
+                        "city": "绵阳市"
+                    }
+                    请确保使用正确的省份和城市名称。
+                    """)
+                .advisors(MessageChatMemoryAdvisor.builder(databaseChatMemory)
+                        .chatMemoryRetrieveSize(StringConstant.CHAT_MAX_LENGTH)
+                        .conversationId(String.valueOf(chatMessageVO.getConversationId()))
+                        .build())
+                .stream()
+                .chatResponse();
     }
 
     private Flux<ChatResponse> longChat(ChatRequestVO chatMessageVO) {

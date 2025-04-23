@@ -16,7 +16,9 @@ import org.springframework.ai.vectorstore.pgvector.PgVectorStore;
 import org.springframework.ai.vectorstore.pgvector.autoconfigure.PgVectorStoreProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 /**
  * @author hllqk
  */
@@ -67,33 +69,42 @@ public class LLMServiceImpl implements LLMService {
 
     @Override
     public ChatModel getChatModel() {
-        OpenAiApi openAiApi = OpenAiApi.builder().baseUrl(simpleBaseUrl).apiKey(simpleApiKey).build();
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .baseUrl(simpleBaseUrl)
+                .apiKey(simpleApiKey)
+                .build();
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
+                .retryTemplate(retryTemplate())
                 .defaultOptions(OpenAiChatOptions.builder().model(simpleModel).build())
                 .build();
     }
 
-
-
     @Override
     public ChatModel getLongContextChatModel() {
-        OpenAiApi openAiApi = OpenAiApi.builder().baseUrl(longBaseUrl).apiKey(longApiKey).build();
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .baseUrl(longBaseUrl)
+                .apiKey(longApiKey)
+                .build();
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
+                .retryTemplate(retryTemplate())
                 .defaultOptions(OpenAiChatOptions.builder().model(longModel).build())
                 .build();
     }
 
     @Override
     public ChatModel getMultimodalModel() {
-        OpenAiApi openAiApi = OpenAiApi.builder().baseUrl(multimodalBaseUrl).apiKey(multimodalApiKey).build();
+        OpenAiApi openAiApi = OpenAiApi.builder()
+                .baseUrl(multimodalBaseUrl)
+                .apiKey(multimodalApiKey)
+                .build();
         return OpenAiChatModel.builder()
                 .openAiApi(openAiApi)
+                .retryTemplate(retryTemplate())
                 .defaultOptions(OpenAiChatOptions.builder().model(multimodalModel).build())
                 .build();
     }
-
 
     @Override
     public EmbeddingModel getEmbeddingModel() {
@@ -120,6 +131,14 @@ public class LLMServiceImpl implements LLMService {
                 .removeExistingVectorStoreTable(pgVectorStoreProperties.isRemoveExistingVectorStoreTable())
                 .idType(pgVectorStoreProperties.getIdType())
                 .vectorTableValidationsEnabled(pgVectorStoreProperties.isSchemaValidation())
+                .build();
+    }
+
+    private RetryTemplate retryTemplate() {
+        return RetryTemplate.builder()
+                .maxAttempts(3)
+                .exponentialBackoff(1000, 2.0, 10000)
+                .retryOn(WebClientResponseException.class)
                 .build();
     }
 

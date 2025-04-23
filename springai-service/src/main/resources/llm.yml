@@ -1,9 +1,9 @@
 chat:
   # 通用对话模型
   simple:
-    base-url: https://aiproxy.bja.sealos.run
-    api-key: sk-8HgqJuIRsv7br3MJ300b14232d084a6c82089d660122F5F2
-    model: deepseek-chat-0324
+    base-url: https://api.siliconflow.cn
+    api-key: sk-jivwbgqsesocbzkggntyzjwlkvlyhuiaphesburlvyswzsfc
+    model: deepseek-ai/DeepSeek-V3
   # 超长文本对话模型
   long:
     base-url: https://api.gpt.ge
@@ -19,3 +19,12 @@ embedding:
   base-url: https://api.siliconflow.cn
   api-key: sk-jivwbgqsesocbzkggntyzjwlkvlyhuiaphesburlvyswzsfc
   model: BAAI/bge-m3
+
+# 天气API配置
+weather:
+  base-url: https://cn.apihz.cn/api/tianqi
+  api-id: ${WEATHER_API_ID:88888888}
+  api-key: ${WEATHER_API_KEY:88888888}
+  timeout: 10
+  max-retries: 3
+  retry-delay: 1

@@ -2,14 +2,20 @@ package com.springai.springai.exception;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.SaTokenContextException;
+import org.springframework.ai.tool.execution.ToolExecutionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class SaTokenExceptionHandler {
+public class CommonExceptionHandler {
 
+    //捕获工具类执行异常
+    @ExceptionHandler(ToolExecutionException.class)
+    public ResponseEntity<String> toolExecutionException(ToolExecutionException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("工具类执行异常: " + e.getMessage());
+    }
     //捕获未获取上下文的异常，通常是因为Ai对话异常导致的
     @ExceptionHandler(SaTokenContextException.class)
     public ResponseEntity<String> handleSaTokenContextException(SaTokenContextException e) {
