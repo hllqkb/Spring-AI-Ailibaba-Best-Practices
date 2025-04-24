@@ -34,7 +34,7 @@ public class ChatConversationController {
      * @param conversationId 对话id
      * @return 对话详情
      */
-    @Cacheable(value = "conversationDetail",key = "#conversationId")
+//    @Cacheable(value = "conversationDetail",key = "#conversationId")
     @ApiModelProperty(value = "获取对话详情")
     @GetMapping("/detail")
     public BaseResponse<ChatConversationVO> detail(@RequestParam("id") Long conversationId) {
@@ -77,5 +77,16 @@ public class ChatConversationController {
     @GetMapping("/list")
     public BaseResponse<List<ChatConversationVO>> listConversation() {
         return ResultUtils.success(chatConversationService.listConversation());
+    }
+    /**
+     * 更新对话
+     * @param chatConversationVO 对话详情
+     */
+    @Cacheable(value = "conversationDetail",key = "#chatConversationVO.getId()")
+    @CacheEvict(value = "conversationList", allEntries = true)
+    @ApiModelProperty(value = "更新对话")
+    @PostMapping("/update")
+    public BaseResponse<ChatConversationVO> updateConversation(@RequestBody ChatConversationVO chatConversationVO) {
+        return ResultUtils.success(chatConversationService.updateConversation(chatConversationVO));
     }
 }

@@ -69,10 +69,10 @@ public class DataBaseChatMemory implements ChatMemory {
             
             if (resourceList != null && !resourceList.isEmpty()) {
                 chatMessage.setHasMedia(true);
-                chatMessage.setResourceIds(resourceList);
+                chatMessage.setResource_ids(resourceList);
             } else {
                 chatMessage.setHasMedia(false);
-                chatMessage.setResourceIds(List.of());
+                chatMessage.setResource_ids(List.of());
             }
             chatMessageList.add(chatMessage);
         }

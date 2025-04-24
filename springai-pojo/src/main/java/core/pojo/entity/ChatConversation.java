@@ -37,6 +37,7 @@ public class ChatConversation implements Serializable {
 	@ApiModelProperty(value = "发起人")
 	private Long userId;
 
+
 	@ApiModelProperty(value = "记录创建时间")
 	private LocalDateTime createTime;
 

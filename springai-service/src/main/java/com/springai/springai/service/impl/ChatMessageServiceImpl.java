@@ -44,12 +44,12 @@ public class ChatMessageServiceImpl extends ServiceImpl<ChatMessageMapper, ChatM
             String role = chatMessage.getRole().toLowerCase();
             Message message = switch (role) {
                 //用户输入
-                case "user" -> new UserMessage(content, originFileService.formResourceIds(chatMessage.getResourceIds()));
+                case "user" -> new UserMessage(content, originFileService.formResourceIds((List<String>) chatMessage.getResource_ids()));
                 //系统指令如提示词
                 case "system" -> new SystemMessage(content);
                 //AI生成的回复消息
                 case "assistant" ->
-                        new AssistantMessage(content, Map.of(), List.of(), originFileService.formResourceIds(chatMessage.getResourceIds()));
+                        new AssistantMessage(content, Map.of(), List.of(), originFileService.formResourceIds((List<String>) chatMessage.getResource_ids()));
                 default -> throw new BusinessException(CoreCode.SYSTEM_ERROR, "未知消息类型");
             };
             return message;

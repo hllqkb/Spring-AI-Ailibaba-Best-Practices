@@ -15,6 +15,7 @@ import core.pojo.vo.ChatConversationVO;
 import core.pojo.vo.ChatMessageVO;
 import core.pojo.vo.ResourceVO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMapper, ChatConversation>
 		implements IChatConversationService {
 	private final ChatMessageMapper chatMessageMapper;
@@ -44,6 +46,16 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 		}
 		return transferConversations(List.of(chatConversation)).get(0);
 	}
+
+	@Override
+	public ChatConversationVO updateConversation(ChatConversationVO chatConversationVO) {
+		//更新会话
+		ChatConversation chatConversation = new ChatConversation();
+		BeanUtils.copyProperties(chatConversationVO, chatConversation);
+		updateById(chatConversation);
+		return chatConversationVO;
+	}
+
 	@Transactional(rollbackFor = Exception.class)
 	@Override
 	public ChatConversationVO createConversation(ChatConversationVO chatConversationVO) {
@@ -93,6 +105,14 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 			//把message转成messageVO
 			List<ChatMessageVO> chatMessageVOList = transferMessages(messageList);
 			chatConversationVO.setMessages(chatMessageVOList);
+			// 检查消息列表是否为空
+			if (!chatMessageVOList.isEmpty()) {
+				chatConversationVO.setResourceIds(chatMessageVOList.get(0).getResourceIds());
+			} else {
+				// 如果消息列表为空，设置空的资源ID列表
+				chatConversationVO.setResourceIds(new ArrayList<>());
+				log.warn("会话ID={}没有关联的消息", conversation.getId());
+			}
 			return chatConversationVO;
 		}).toList();
 	}
@@ -100,12 +120,23 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 	private List<ChatMessageVO> transferMessages(List<ChatMessage> messageList) {
 		return messageList.stream().map(message -> {
 			ChatMessageVO chatmessagevo = new ChatMessageVO();
-			//把ChatMessage的属性复制到ChatConversationVO
+			//把ChatMessage的属性复制到ChatConversationVO，但不包括resource_ids字段，因为字段名不匹配
 			BeanUtils.copyProperties(message, chatmessagevo);
-			//把List resourceIds转成List ResourceVO
-			List<String> resourceIds = message.getResourceIds();
-			List<ResourceVO> resourceVOList = originFileService.resourcesFromIds(resourceIds);
-			chatmessagevo.setResources(resourceVOList);
+			//直接获取resource_ids列表
+			List<String> resourceIds = message.getResource_ids() == null ? new ArrayList<>() : message.getResource_ids();
+			// 添加日志记录，检查resourceIds是否为null
+			log.info("消息ID={}, resourceIds={}, 消息内容={}", message.getId(), resourceIds, message.getContent());
+			// 确保resourceIds不为null
+			if (resourceIds != null) {
+				List<ResourceVO> resourceVOList = originFileService.resourcesFromIds(resourceIds);
+				chatmessagevo.setResources(resourceVOList);
+				chatmessagevo.setResourceIds(resourceIds);
+			} else {
+				// 如果为null，设置为空列表
+				chatmessagevo.setResources(new ArrayList<>());
+				chatmessagevo.setResourceIds(new ArrayList<>());
+				log.warn("消息ID={}的resource_ids为null", message.getId());
+			}
 			return chatmessagevo;
 		}).toList();
 	}

@@ -23,4 +23,6 @@ public interface IChatConversationService extends IService<ChatConversation> {
     List<ChatConversationVO> listConversation();
 
     ChatConversationVO getConversation(Long conversationId);
+
+    ChatConversationVO updateConversation(ChatConversationVO chatConversationVO);
 }
