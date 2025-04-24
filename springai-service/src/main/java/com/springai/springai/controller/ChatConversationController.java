@@ -56,14 +56,14 @@ public class ChatConversationController {
     }
     /**
      * 删除对话
-     * @param conversationId 对话id
+     *
      *
      * */
     @CacheEvict(value = "conversationList", allEntries = true)
     @ApiModelProperty(value = "删除对话")
     @PostMapping("/remove")
-    public BaseResponse<Boolean> removeConversation(@RequestParam("id") Long conversationId) {
-        return ResultUtils.success(chatConversationService.removeConversation(conversationId));
+    public BaseResponse<Boolean> removeConversation(@RequestBody ChatConversationVO chatConversationVO) {
+        return ResultUtils.success(chatConversationService.removeConversation(chatConversationVO.getId()));
     }
 
     /**
