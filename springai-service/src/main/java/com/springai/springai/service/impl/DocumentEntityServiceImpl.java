@@ -127,6 +127,35 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 		}
 	}
 
+	/*	   "resourceIds": [
+			   "[\"f363201a4c9612b2\"]"
+			   ],*/
+	@Override
+	public DocumentVO getDocumentById(Long long_id) {
+		DocumentEntity document = documentEntityMapper.selectById(long_id);
+		if (document == null) {
+			throw new BusinessException(CoreCode.FILE_NOT_FOUND);
+		}
+		String resourceId = document.getResourceId();
+		OriginFileSource originFileResource = originFileResourceMapper.selectById(resourceId);
+		if (originFileResource == null) {
+			throw new BusinessException(CoreCode.FILE_NOT_FOUND);
+		}
+		String path = objectStoreService.getTmpFileUrl(originFileResource.getBucketName(), originFileResource.getObjectName());
+		KnowledgeBase knowledgeBase = knowledgeBaseMapper.selectById(document.getBaseId());
+		DocumentVO documentVO = new DocumentVO();
+		documentVO.setId(document.getId());
+		documentVO.setFileName(document.getFileName());
+		documentVO.setIsEmbedding(document.getIsEmbedding());
+		documentVO.setBaseId(document.getBaseId());
+		documentVO.setPath(path);
+		documentVO.setKnowledgeBaseName(knowledgeBase.getName());
+		documentVO.setFileType(originFileResource.getContentType());
+		documentVO.setUploadTime(document.getCreateTime());
+		return documentVO;
+
+	}
+
 	private List<DocumentVO> transfer(List<DocumentEntity> documentEntities) {
 		return documentEntities.stream().map(item -> {
 			String resourceId = item.getResourceId();

@@ -54,5 +54,12 @@ public class DocumentController {
 	public void downloadDocument(@PathVariable Long fileId, HttpServletResponse response) {
 		documentEntityService.download(fileId, response);
 	}
+	/**
+	 * 根据id查询文档的具体信息
+	 */
+	@GetMapping("/{id}")
+	public BaseResponse<DocumentVO> getDocumentById(@PathVariable String id) {
+		return ResultUtils.success(documentEntityService.getDocumentById(id));
+	}
 
 }
