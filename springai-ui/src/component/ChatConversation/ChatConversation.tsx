@@ -38,6 +38,10 @@ const chatOptions = [
     value: 'multimodalRAG',
     label: '多模态RAG对话',
   },
+  {
+    value: 'longmodel',
+    lable: "长文本对话"
+  }
 ];
 const ChatConversation = () => {
   const {

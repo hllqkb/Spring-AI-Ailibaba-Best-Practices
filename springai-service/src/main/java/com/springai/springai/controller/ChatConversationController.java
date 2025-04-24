@@ -49,6 +49,7 @@ public class ChatConversationController {
      * @param chatConversationVO 对话详情
      *
      * */
+    @CacheEvict(value = "conversationList", allEntries = true)
     @ApiModelProperty(value = "创建对话")
     @PostMapping("/create")
     public BaseResponse<ChatConversationVO> createConversation(@RequestBody ChatConversationVO chatConversationVO) {

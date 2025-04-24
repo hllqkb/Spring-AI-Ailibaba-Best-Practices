@@ -55,6 +55,25 @@ const ChatBottombar = (props: Props) => {
             onChange={(e) => {
               setInputContent(e.target.value);
             }}
+            onPressEnter={(e) => {
+              // 如果正在发送中或者按下了Shift键（支持Shift+Enter换行），则不触发发送
+              if (isSending || e.shiftKey || inputContent.trim() === '') {
+                return;
+              }
+              e.preventDefault(); // 阻止默认的换行行为
+              // 触发发送按钮的点击事件
+              (async () => {
+                try {
+                  setIsSending(true);
+                  await props.onSendMessage(inputContent);
+                  setInputContent('');
+                } finally {
+                  setIsSending(false);
+                  setFileList([]);
+                  setBlobList([]);
+                }
+              })();
+            }}
           ></TextArea>
         </div>
         <div className="input-tool">
