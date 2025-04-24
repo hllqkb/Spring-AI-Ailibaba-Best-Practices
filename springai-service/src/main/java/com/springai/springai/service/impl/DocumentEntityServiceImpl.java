@@ -71,7 +71,7 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 
 	@Override
 	public Boolean deleteKnowledgeFile(DocumentVO documentVO) {
-		Long fileId = documentVO.getId();
+		String fileId = documentVO.getId();
 		Long baseId = documentVO.getBaseId();
 
 		QueryWrapper<DocumentEntity> queryWrapper = new QueryWrapper<>();
@@ -131,7 +131,7 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 			   "[\"f363201a4c9612b2\"]"
 			   ],*/
 	@Override
-	public DocumentVO getDocumentById(Long long_id) {
+	public DocumentVO getDocumentById(String long_id) {
 		DocumentEntity document = documentEntityMapper.selectById(long_id);
 		if (document == null) {
 			throw new BusinessException(CoreCode.FILE_NOT_FOUND);

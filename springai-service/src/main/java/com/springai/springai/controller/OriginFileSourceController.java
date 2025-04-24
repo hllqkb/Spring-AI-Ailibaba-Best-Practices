@@ -34,12 +34,13 @@ public class OriginFileSourceController {
 
     /**
      * 上传知识文件
+     *
      * @param file
      * @param knowledgeId
      * @return
      */
     @PostMapping(value="/knowledge/{knowledgeId}")
-    public BaseResponse<Long> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") Long knowledgeId) {
+    public BaseResponse<String> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") Long knowledgeId) {
         return ResultUtils.success(originFileService.uploadFile(file, knowledgeId));
     }
 }

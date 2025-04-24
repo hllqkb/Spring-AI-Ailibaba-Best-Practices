@@ -97,7 +97,7 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
     }
 
     @Override
-    public Long uploadFile(MultipartFile file, Long knowledgeId) {
+    public String uploadFile(MultipartFile file, Long knowledgeId) {
         //上传知识库
         //先上传文件到Minio
         OriginFileSource upload=this.upload(file,KNOWLEDGE_BUCKET_NAME);

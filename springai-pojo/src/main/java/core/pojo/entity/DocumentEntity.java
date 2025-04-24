@@ -16,8 +16,8 @@ public class DocumentEntity extends BaseEntity {
 	/**
 	 *
 	 */
-	@TableId(value = "id", type = IdType.AUTO)
-	private Long id;
+	@TableId(value = "id")
+	private String id;
 
 	/**
 	 *

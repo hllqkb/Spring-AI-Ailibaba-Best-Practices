@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  pgvector:
+    image: 'pgvector/pgvector:pg17'
+    ports:
+      - '5433:5432'
+    volumes:
+      - 'D:\\docker\\postgresql_pgvector\\data:/var/lib/postgresql/data:z'
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+    restart: always
+    container_name: pgvector
+#  创建目录：
+#  mkdir D:\docker\postgresql_pgvector\data
+#  启动 Docker Compose：
+#  docker-compose -f docker-compose-win.yml up -d

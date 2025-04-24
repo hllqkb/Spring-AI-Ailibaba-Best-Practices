@@ -14,5 +14,5 @@ public interface DocumentEntityService {
 	void download(Long fileId, HttpServletResponse response);
 
 
-	DocumentVO getDocumentById(Long id);
+	DocumentVO getDocumentById(String id);
 }

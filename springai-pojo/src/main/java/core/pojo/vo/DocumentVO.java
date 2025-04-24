@@ -12,7 +12,7 @@ public class DocumentVO extends PageParam {
 
 	private Long knowledgeBaseId;
 
-	private Long id;
+	private String id;
 
 	private String fileName;
 

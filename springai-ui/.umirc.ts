@@ -69,7 +69,7 @@ export default defineConfig({
   openAPI: [
     {
       requestLibPath: "import { request } from '@umijs/max'",
-      schemaPath: `${process.env.UMI_APP_BASE_URL}/v3/api-docs/default`, // openapi 接口地址
+      schemaPath: `${process.env.UMI_APP_BASE_URL || 'http://localhost:8788'}/v3/api-docs/default`, // openapi 接口地址
       mock: false,
       apiPrefix() {
         return "'/api'";
