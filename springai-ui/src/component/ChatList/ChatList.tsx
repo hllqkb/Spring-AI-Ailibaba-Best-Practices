@@ -5,6 +5,7 @@ import './index.css';
 interface Props {
   messages: API.ChatMessageVO[];
   chatWindowRef: LegacyRef<any>;
+  onPreviewResource?: (resourceId: string) => void;
 }
 const ChatList = (props: Props) => {
   return (
@@ -22,8 +23,10 @@ const ChatList = (props: Props) => {
                     type: item.fileType ?? '',
                     url: item.path ?? '',
                     fileName: item.fileName ?? '',
+                    id: item.id ?? '',
                   };
                 })}
+                onPreviewResource={props.onPreviewResource}
               />
             );
           })

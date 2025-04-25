@@ -1,6 +1,15 @@
 // @ts-ignore
 /* eslint-disable */
+import { API } from '@/services/typings';
 import { request } from '@umijs/max';
+
+/** 获取资源文件 GET /api/originFileResource/get */
+export async function getResource(params: { id: string }): Promise<API.Response<API.FileResourceVO>> {
+  return request('/api/originFileResource/get', {
+    method: 'GET',
+    params: { resourceId: params.id },
+  });
+}
 
 /** 此处后端没有提供注释 POST /resource/chat */
 export async function uploadChatFile(

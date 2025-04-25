@@ -57,9 +57,6 @@ public class DocumentController {
 	/**
 	 * 根据id查询文档的具体信息
 	 */
-	@GetMapping("/{id}")
-	public BaseResponse<DocumentVO> getDocumentById(@PathVariable String id) {
-		return ResultUtils.success(documentEntityService.getDocumentById(id));
-	}
+
 
 }

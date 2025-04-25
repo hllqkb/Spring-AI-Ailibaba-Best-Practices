@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ResourceVO {
     //资源ID
-    private int resourceId;
+    private String resourceId;
     //资源名称
     private String fileName;
     //资源类型

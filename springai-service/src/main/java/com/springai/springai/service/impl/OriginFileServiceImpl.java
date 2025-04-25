@@ -2,6 +2,7 @@ package com.springai.springai.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.springai.springai.Constant.StringConstant;
 import com.springai.springai.mapper.DocumentEntityMapper;
 import com.springai.springai.mapper.OriginFileSourceMapper;
 import com.springai.springai.service.LLMService;
@@ -23,6 +24,7 @@ import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.tika.TikaDocumentReader;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -52,6 +54,9 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
     private final TokenTextSplitter tokenTextSplitter;
 
     private final LLMService llmService;
+
+    private final com.springai.springai.config.MinioProperties minioProperties;
+
     public static final String CHAT_BUCKET_NAME = "origin-file";
 
     public static final String KNOWLEDGE_BUCKET_NAME = "knowledge-file";
@@ -148,9 +153,22 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
         return documentEntity.getId();
     }
 
+    //根据ids获取资源列表
     @Override
     public List<ResourceVO> resourcesFromIds(List<String> ids) {
-        return List.of();
+        List<OriginFileSource> originFileSources = this.listByIds(ids);
+        String url= StringConstant.MinioUrlPrefix;
+        return originFileSources.stream().map(item -> {
+            ResourceVO resourceVO = new ResourceVO();
+            resourceVO.setResourceId(item.getId());
+            resourceVO.setFileName(item.getFileName());
+            String path=item.getPath().replaceAll("origin-file", "");
+            log.info("path:{}",path);
+            resourceVO.setFilePath(url+path);
+            resourceVO.setFileSize(item.getSize());
+            resourceVO.setFileType(item.getContentType());
+            return resourceVO;
+        }).toList();
     }
     private OriginFileSource upload(MultipartFile file, String bucketName) {
         String originalFilename = file.getOriginalFilename();

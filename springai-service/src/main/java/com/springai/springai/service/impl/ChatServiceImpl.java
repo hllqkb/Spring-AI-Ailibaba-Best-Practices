@@ -116,6 +116,10 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     public String draw(String prompt) {
+        log.info("prompt: {}", prompt);
+        if (prompt == null) {
+            return null;
+        }
         ImageResponse response = openAiImageModel.call(
                 new ImagePrompt(prompt,
                         OpenAiImageOptions.builder()
@@ -125,6 +129,7 @@ public class ChatServiceImpl implements ChatService {
                                 .width(1024).build())
 
         );
+        log.info("response: {}", response);
         return response.getResult().getOutput().getUrl();
     }
 

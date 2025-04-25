@@ -2,7 +2,7 @@ import {
   createChatConversation,
   detailChatConversation,
 } from '@/services/chatConversationController';
-import { uploadChatFile } from '@/services/originFileResourceController';
+import { getResource, uploadChatFile } from '@/services/originFileResourceController';
 import { useModel } from '@umijs/max';
 import { message } from 'antd';
 import { useEffect, useRef, useState } from 'react';
@@ -176,11 +176,43 @@ const ChatWindow = () => {
       messageApi.error('文件上传失败');
     }
   };
+
+  const previewResource = async (resourceId: string) => {
+    try {
+      const res = await getResource({ id: resourceId });
+      if (res.code === 0 && res.data) {
+        // 创建div展示链接
+        const linkDiv = document.createElement('div');
+        linkDiv.style.padding = '10px';
+        linkDiv.style.border = '1px solid #ddd';
+        linkDiv.style.borderRadius = '4px';
+        linkDiv.style.margin = '10px 0';
+        linkDiv.innerHTML = `<a href="${res.data.filePath}" target="_blank">${res.data.filePath}</a>`;
+        
+        // 添加到聊天窗口
+        if (chatWindowRef.current) {
+          chatWindowRef.current.appendChild(linkDiv);
+        }
+        
+        // 保留原有打开功能
+        window.open(res.data.filePath, '_blank');
+      } else {
+        messageApi.error(res.message);
+      }
+    } catch (e) {
+      console.log(e);
+      messageApi.error('文件预览失败');
+    }
+  };
   return (
     <>
       {contextHolder}
       <div className="chat-window-box">
-        <ChatList chatWindowRef={chatWindowRef} messages={curChatMessage} />
+        <ChatList 
+  chatWindowRef={chatWindowRef} 
+  messages={curChatMessage} 
+  onPreviewResource={previewResource}
+/>
         <ChatBottombar
           onSendMessage={handleSendMsg}
           uploadFile={handleUploadChatFile}

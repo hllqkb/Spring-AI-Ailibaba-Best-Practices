@@ -3,13 +3,13 @@ package com.springai.springai.controller;
 import com.springai.springai.service.OriginFileService;
 import core.common.BaseResponse;
 import core.common.ResultUtils;
+import core.pojo.vo.ResourceVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * 存储聊天文件
@@ -22,6 +22,15 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/resource")
 public class OriginFileSourceController {
     private final OriginFileService originFileService;
+    /**
+     * 根据ids获取资源
+     * @param ids id列表
+     * @return 资源列表
+     */
+    @PostMapping(value = "/get")
+    public BaseResponse<List<ResourceVO>> resourcesFromIds(@RequestBody List<String> ids) {
+        return ResultUtils.success(originFileService.resourcesFromIds(ids));
+    }
     /**
      * 上传聊天文件
      * @param file 文件
