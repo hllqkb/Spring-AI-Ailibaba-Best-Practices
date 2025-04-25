@@ -47,4 +47,5 @@ public interface ChatService {
 
 	Flux<ChatResponse> getFunctionChat(ChatRequestVO chatRequestVO);
 
+    String draw(String prompt);
 }

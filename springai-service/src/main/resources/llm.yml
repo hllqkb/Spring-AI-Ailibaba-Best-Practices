@@ -20,6 +20,7 @@ embedding:
   api-key: sk-jivwbgqsesocbzkggntyzjwlkvlyhuiaphesburlvyswzsfc
   model: BAAI/bge-m3
 
+
 # 天气API配置
 weather:
   base-url: https://cn.apihz.cn/api/tianqi

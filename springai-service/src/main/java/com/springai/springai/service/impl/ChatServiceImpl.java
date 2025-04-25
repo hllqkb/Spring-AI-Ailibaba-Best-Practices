@@ -22,6 +22,10 @@ import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.content.Media;
+import org.springframework.ai.image.ImagePrompt;
+import org.springframework.ai.image.ImageResponse;
+import org.springframework.ai.openai.OpenAiImageModel;
+import org.springframework.ai.openai.OpenAiImageOptions;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -45,6 +49,7 @@ public class ChatServiceImpl implements ChatService {
     private final OriginFileService originFileService;
     private final DataBaseChatMemory databaseChatMemory;
     private final WeatherTool weatherTool;
+    private final OpenAiImageModel openAiImageModel;
     private final SqlQueryTool sqlQueryTool;
     @Value("classpath:prompt/RAG.txt")
     private Resource ragPrompt;
@@ -107,6 +112,20 @@ public class ChatServiceImpl implements ChatService {
                         .build())
                 .stream()
                 .chatResponse();
+    }
+
+    @Override
+    public String draw(String prompt) {
+        ImageResponse response = openAiImageModel.call(
+                new ImagePrompt(prompt,
+                        OpenAiImageOptions.builder()
+                                .quality("hd")
+                                .N(1)
+                                .height(1024)
+                                .width(1024).build())
+
+        );
+        return response.getResult().getOutput().getUrl();
     }
 
     private Flux<ChatResponse> longChat(ChatRequestVO chatMessageVO) {

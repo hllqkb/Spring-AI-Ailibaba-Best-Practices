@@ -1,6 +1,7 @@
 package com.springai.springai.controller;
 
 import com.springai.springai.service.ChatService;
+import core.pojo.vo.ChatMessageVO;
 import core.pojo.vo.ChatRequestVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,10 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 /**
@@ -25,6 +23,17 @@ import reactor.core.publisher.Flux;
 public class ChatController {
 
 	private final ChatService chatService;
+	/**
+	 * 画图对话接口
+	 */
+	@GetMapping(value = "/chat/draw")
+	public String draw(@RequestParam String prompt) {
+		if(prompt == null || prompt.isEmpty()){
+			return "请输入要生成的图形";
+		}
+		return chatService.draw(prompt);
+	}
+
 
 	/**
 	 * 调用工具类的聊天服务

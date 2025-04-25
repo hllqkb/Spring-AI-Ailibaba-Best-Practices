@@ -5,8 +5,8 @@ spring:
     import: classpath:llm.yml
   ai:
     openai:
-      base-url: https://example.com/ #OpenAI 地址(暂时不用，聊天模型在llm.yml中配置)
-      api-key: sk-xxxxxxxxxxxxxxxxxxxxxxx #OpenAI API Key
+      base-url: https://api.v3.cm #OpenAI 地址(暂时不用，聊天模型在llm.yml中配置)
+      api-key: sk-JJHRH4tZwO7vZ21p5b14104c78424c4a9bA036Da75Bb1f86 #OpenAI API Key
     vectorstore:
       pgvector:
         initialize-schema: true

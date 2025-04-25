@@ -5,11 +5,13 @@ services:
     ports:
       - '5433:5432'
     volumes:
-      - 'D:\\docker\\postgresql_pgvector\\data:/var/lib/postgresql/data:z'
+      - './postgresql_data:/var/lib/postgresql/data'  # 使用相对路径
     environment:
       POSTGRES_PASSWORD: admin
       POSTGRES_USER: admin
-    restart: always
+      POSTGRES_DB: vector_db
+      PGDATA: /var/lib/postgresql/data/pgdata  # 明确数据目录
+    restart: unless-stopped  # 更灵活的重启策略
     networks:
       - vector-net
 
@@ -17,16 +19,16 @@ services:
     image: minio/minio
     hostname: minio
     ports:
-      - '9000:9000'  # API端口
+      - '9000:9000'  # S3 API端口
       - '9001:9001'  # 控制台端口
     environment:
-      MINIO_ROOT_USER: minio      # 推荐使用更安全的密码
+      MINIO_ROOT_USER: minio       # 增强安全性
       MINIO_ROOT_PASSWORD: minio123
-      MINIO_DOMAIN: localhost          # 访问域名配置
+      MINIO_DOMAIN: localhost
     volumes:
-      - 'D:\\docker\\minio\\data:/data'          # 数据存储
-      - 'D:\\docker\\minio\\config:/root/.minio' # 配置文件
-    command: server --console-address ':9001' /data
+      - './minio/data:/data'          # 数据卷使用相对路径
+      - './minio/config:/root/.minio' # 配置目录
+    command: server --console-address ':9001' /data  # 指定控制台端口
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
       interval: 30s
@@ -39,5 +41,5 @@ services:
 networks:
   vector-net:
     driver: bridge
-#  启动 Docker Compose：
-#  docker-compose -f docker-compose-win.yml up -d
+# Mac上的docker-compose命令
+#docker-compose up -d
