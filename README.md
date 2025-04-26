@@ -74,9 +74,9 @@ graph LR
 
 ### Docker部署相关环境
 
-[Docker部署Minio（详细步骤）_minio docker部署-CSDN博客](https://blog.csdn.net/Keep__Me/article/details/135999640)
+安装pgvector & postgresql&minio直接运行docker文件夹下面的docker-compose.yml文件即可
 
-安装pgvector & postgresql直接运行docker文件夹下面的docker-compose.yml文件即可
+mac运行docker-compose-mac，win运行docker-compose-win
 
 ~~[利用Docker来安装pgvector & postgresql,及使用注意事项,排坑](https://www.bgegao.com/2024/10/3138.html)~~
 
@@ -155,7 +155,9 @@ embedding:
 
 **然后导入sql/init.sql脚本**
 
-
+> [!NOTE]
+>
+> 用idea内的导入，不要用navicat
 
 最后启动`SpringAiApp`或者运行下面命令
 
@@ -177,3 +179,8 @@ embedding:
 
 - **GitHub**：https://github.com/hllqkb
 - **Email**：[hllqkb@google.com](mailto:hllqkb@google.com)
+
+> [!WARNING]
+>
+> 此项目后面将不会维护
+
