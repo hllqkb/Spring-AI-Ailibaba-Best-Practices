@@ -1,4 +1,4 @@
-# Spring Ai Alibaba Best Practices
+# Spring Ai Alibaba Best Practices 1.1
 
 > 使用[SprinAI Alibaba](https://java2ai.com/docs/1.0.0-M6.1/overview/)和[RAG 技术](https://www.promptingguide.ai/zh/techniques/rag)实现的个人知识库 AI 问答系统，适配 OpenAI 接口
 >
