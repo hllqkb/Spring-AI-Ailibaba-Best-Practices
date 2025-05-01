@@ -52,8 +52,11 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 	@Override
 	public Page<DocumentVO> listDocuments(DocumentVO document) {
 		if (document.getKnowledgeBaseId() == null) {
-			throw new BusinessException(CoreCode.PARAMS_ERROR);
+//			throw new BusinessException(CoreCode.PARAMS_ERROR);
+			//请求失败
+			return null;
 		}
+
 		LambdaQueryWrapper<DocumentEntity> qw = new LambdaQueryWrapper<>();
 		if (document.getFileName() != null) {
 			qw.like(DocumentEntity::getFileName, document.getFileName());
