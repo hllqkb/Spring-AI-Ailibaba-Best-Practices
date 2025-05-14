@@ -1,5 +1,5 @@
 # Spring Ai Alibaba Best Practices 1.1
-
+[![了解更加详细通过 Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hllqkb/Spring-AI-Ailibaba-Best-Practices)
 > 使用[SprinAI Alibaba](https://java2ai.com/docs/1.0.0-M6.1/overview/)和[RAG 技术](https://www.promptingguide.ai/zh/techniques/rag)实现的个人知识库 AI 问答系统，适配 OpenAI 接口
 >
 > 采用简洁代码实现的最佳实践
