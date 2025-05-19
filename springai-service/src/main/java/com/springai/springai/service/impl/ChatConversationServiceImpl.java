@@ -1,14 +1,21 @@
 package com.springai.springai.service.impl;
 
 
-import cn.dev33.satoken.stp.StpUtil;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.springai.springai.mapper.ChatConversationMapper;
 import com.springai.springai.mapper.ChatMessageMapper;
 import com.springai.springai.service.IChatConversationService;
 import com.springai.springai.service.OriginFileService;
+
+import cn.dev33.satoken.stp.StpUtil;
 import core.pojo.entity.ChatConversation;
 import core.pojo.entity.ChatMessage;
 import core.pojo.vo.ChatConversationVO;
@@ -16,12 +23,6 @@ import core.pojo.vo.ChatMessageVO;
 import core.pojo.vo.ResourceVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * <p>
@@ -100,7 +101,7 @@ public class ChatConversationServiceImpl extends ServiceImpl<ChatConversationMap
 			//查询消息表关联的会话id的全部消息，按照创建时间排序
 			LambdaQueryWrapper<ChatMessage> queryWrapper = new LambdaQueryWrapper<>();
 			//根据会话id获取messages和根据创建时间排序
-			queryWrapper.eq(ChatMessage::getConversationId, String.valueOf(conversation.getId())).orderByDesc(ChatMessage::getCreateTime);
+			queryWrapper.eq(ChatMessage::getConversationId, String.valueOf(conversation.getId())).orderByAsc(ChatMessage::getCreateTime);
 			List<ChatMessage> messageList = chatMessageMapper.selectList(queryWrapper);
 			//把message转成messageVO
 			List<ChatMessageVO> chatMessageVOList = transferMessages(messageList);

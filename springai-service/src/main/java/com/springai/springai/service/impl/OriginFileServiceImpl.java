@@ -1,6 +1,26 @@
 package com.springai.springai.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.ai.content.Media;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.reader.tika.TikaDocumentReader;
+import org.springframework.ai.transformer.splitter.TokenTextSplitter;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MimeTypeUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.springai.springai.Constant.StringConstant;
 import com.springai.springai.mapper.DocumentEntityMapper;
@@ -8,6 +28,8 @@ import com.springai.springai.mapper.OriginFileSourceMapper;
 import com.springai.springai.service.LLMService;
 import com.springai.springai.service.OriginFileService;
 import com.springai.springai.utils.SaTokenUtil;
+
+import cn.dev33.satoken.stp.StpUtil;
 import core.common.CoreCode;
 import core.exception.BusinessException;
 import core.pojo.entity.DocumentEntity;
@@ -19,27 +41,6 @@ import core.service.objectstore.StorageFile;
 import core.utils.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.content.Media;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.reader.tika.TikaDocumentReader;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
-import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MimeTypeUtils;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author hllqk
@@ -102,7 +103,7 @@ public class OriginFileServiceImpl extends ServiceImpl<OriginFileSourceMapper, O
     }
 
     @Override
-    public String uploadFile(MultipartFile file, Long knowledgeId) {
+    public Long uploadFile(MultipartFile file, Long knowledgeId) {
         //上传知识库
         //先上传文件到Minio
         OriginFileSource upload=this.upload(file,KNOWLEDGE_BUCKET_NAME);

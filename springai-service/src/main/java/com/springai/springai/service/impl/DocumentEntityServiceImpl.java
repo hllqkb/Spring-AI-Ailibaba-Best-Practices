@@ -1,6 +1,18 @@
 package com.springai.springai.service.impl;
 
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.ai.vectorstore.filter.Filter;
+import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
+import org.springframework.beans.BeanUtils;
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,6 +21,7 @@ import com.springai.springai.mapper.KnowledgeBaseMapper;
 import com.springai.springai.mapper.OriginFileSourceMapper;
 import com.springai.springai.service.DocumentEntityService;
 import com.springai.springai.service.LLMService;
+
 import core.common.CoreCode;
 import core.exception.BusinessException;
 import core.pojo.entity.DocumentEntity;
@@ -20,17 +33,6 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.ai.vectorstore.filter.Filter;
-import org.springframework.ai.vectorstore.filter.FilterExpressionBuilder;
-import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -51,17 +53,20 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 
 	@Override
 	public Page<DocumentVO> listDocuments(DocumentVO document) {
-		if (document.getKnowledgeBaseId() == null) {
+		log.info("Received document query: {}", document);
+		if (document.getBaseId() == null) {
 			throw new BusinessException(CoreCode.PARAMS_ERROR);
 		}
 		LambdaQueryWrapper<DocumentEntity> qw = new LambdaQueryWrapper<>();
-		if (document.getFileName() != null) {
+		if (document.getFileName() != null && !document.getFileName().isEmpty()) {
 			qw.like(DocumentEntity::getFileName, document.getFileName());
 		}
-		qw.eq(DocumentEntity::getBaseId, document.getKnowledgeBaseId());
+		qw.eq(DocumentEntity::getBaseId, document.getBaseId());
 		qw.orderByDesc(DocumentEntity::getCreateTime);
+		log.info("QueryWrapper: {}", qw.getExpression());
 		Page<DocumentEntity> page = Page.of(document.getPageNo(), document.getPageSize());
 		Page<DocumentEntity> documentPage = documentEntityMapper.selectPage(page, qw);
+		log.info("Query result count: {}", documentPage.getTotal());
 		List<DocumentVO> vos = transfer(documentPage.getRecords());
 		Page<DocumentVO> res = new Page<>();
 		BeanUtils.copyProperties(documentPage, res);
@@ -71,7 +76,7 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 
 	@Override
 	public Boolean deleteKnowledgeFile(DocumentVO documentVO) {
-		String fileId = documentVO.getId();
+		Long fileId = documentVO.getId();
 		Long baseId = documentVO.getBaseId();
 
 		QueryWrapper<DocumentEntity> queryWrapper = new QueryWrapper<>();
@@ -86,7 +91,7 @@ public class DocumentEntityServiceImpl implements DocumentEntityService {
 			// 删除向量数据
 			VectorStore vectorStore = llmService.getVectorStore();
 
-			Filter.Expression filterExpression = new FilterExpressionBuilder().eq("document_id", fileId).build();
+			Filter.Expression filterExpression = new FilterExpressionBuilder().eq("document_id", fileId.toString()).build();
 
 			vectorStore.delete(filterExpression);
 			return true;

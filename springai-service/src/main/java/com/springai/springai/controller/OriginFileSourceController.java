@@ -1,15 +1,20 @@
 package com.springai.springai.controller;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.springai.springai.service.OriginFileService;
+
 import core.common.BaseResponse;
 import core.common.ResultUtils;
 import core.pojo.vo.ResourceVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 /**
  * 存储聊天文件
@@ -49,7 +54,7 @@ public class OriginFileSourceController {
      * @return
      */
     @PostMapping(value="/knowledge/{knowledgeId}")
-    public BaseResponse<String> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") Long knowledgeId) {
+    public BaseResponse<Long> uploadKnowledgeFile(MultipartFile file, @PathVariable("knowledgeId") Long knowledgeId) {
         return ResultUtils.success(originFileService.uploadFile(file, knowledgeId));
     }
 }

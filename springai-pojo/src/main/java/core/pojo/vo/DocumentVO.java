@@ -1,10 +1,10 @@
 package core.pojo.vo;
 
+import java.time.LocalDateTime;
+
 import core.pojo.PageParam;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -12,7 +12,7 @@ public class DocumentVO extends PageParam {
 
 	private Long knowledgeBaseId;
 
-	private String id;
+	private Long id;
 
 	private String fileName;
 

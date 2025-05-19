@@ -1,10 +1,10 @@
-# Spring Ai Alibaba Best Practices
-
+# Spring Ai Alibaba Best Practices 1.1
+[![了解更加详细通过 Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/hllqkb/Spring-AI-Ailibaba-Best-Practices)
 > 使用[SprinAI Alibaba](https://java2ai.com/docs/1.0.0-M6.1/overview/)和[RAG 技术](https://www.promptingguide.ai/zh/techniques/rag)实现的个人知识库 AI 问答系统，适配 OpenAI 接口
 >
 > 采用简洁代码实现的最佳实践
 
-## 已实现的功能 
+## 已实现的功能
 
 ### 后端工作
 
@@ -101,11 +101,11 @@ pnpm start
 
 ```yaml
 vectorstore:
-      pgvector:
-        initialize-schema: true
-        table-name: vector_store_1024
-        remove-existing-vector-store-table: false
-        dimensions: (写你的向量化模型的维度，默认是1024)
+  pgvector:
+    initialize-schema: true
+    table-name: vector_store_1024
+    remove-existing-vector-store-table: false
+    dimensions: (写你的向量化模型的维度，默认是1024)
   datasource:
     driver-class-name: org.postgresql.Driver
     username: (数据库账号)
@@ -140,14 +140,14 @@ chat:
     model: model
   # 多模态对话模型
   multimodal:
-    base-url: 
-    api-key: 
+    base-url:
+    api-key:
     model:
 # 嵌入模型
 embedding:
-  base-url: 
-  api-key: 
-  model: 
+  base-url:
+  api-key:
+  model:
 
 ```
 
