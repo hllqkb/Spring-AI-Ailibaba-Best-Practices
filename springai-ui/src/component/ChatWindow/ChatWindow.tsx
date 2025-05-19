@@ -204,22 +204,6 @@ const ChatWindow = () => {
       messageApi.error('文件预览失败');
     }
   };
-  return (
-    <>
-      {contextHolder}
-      <div className="chat-window-box">
-        <ChatList 
-  chatWindowRef={chatWindowRef} 
-  messages={curChatMessage} 
-  onPreviewResource={previewResource}
-/>
-        <ChatBottombar
-          onSendMessage={handleSendMsg}
-          uploadFile={handleUploadChatFile}
-        />
-      </div>
-    </>
-  );
 };
 
 export default ChatWindow;

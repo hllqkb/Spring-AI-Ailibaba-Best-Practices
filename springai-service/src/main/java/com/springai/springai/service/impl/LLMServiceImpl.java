@@ -116,7 +116,7 @@ public class LLMServiceImpl implements LLMService {
 
     @Override
     public VectorStore getVectorStore() {
-        log.info("PgVectorStore Properties: dimensions={}, tableName={}, initializeSchema={}", 
+        log.info("PgVectorStore 配置: 维度={}, tableName={}, initializeSchema={}",
             pgVectorStoreProperties.getDimensions(),
             pgVectorStoreProperties.getTableName(),
             pgVectorStoreProperties.isInitializeSchema());
