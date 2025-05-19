@@ -1,25 +1,24 @@
 package com.springai.springai.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
-import com.springai.springai.Constant.StringConstant;
-import com.springai.springai.mapper.ChatMessageMapper;
-import core.pojo.entity.ChatMessage;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import static org.springframework.ai.chat.messages.AbstractMessage.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.messages.Message;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
+import com.springai.springai.mapper.ChatMessageMapper;
 
-import static com.springai.springai.Constant.StringConstant.CHAT_MEDIAS;
-import static org.springframework.ai.chat.messages.AbstractMessage.MESSAGE_TYPE;
+import core.pojo.entity.ChatMessage;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author hllqk
@@ -72,7 +71,7 @@ public class DataBaseChatMemory implements ChatMemory {
                 chatMessage.setResource_ids(resourceList);
             } else {
                 chatMessage.setHasMedia(false);
-                chatMessage.setResource_ids(List.of());
+                chatMessage.setResource_ids(new ArrayList<>());
             }
             chatMessageList.add(chatMessage);
         }
