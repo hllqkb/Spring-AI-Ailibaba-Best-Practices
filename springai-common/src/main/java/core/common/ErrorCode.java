@@ -3,9 +3,9 @@ package core.common;
 import lombok.Data;
 
 /**
- * @Project: me.pgthinker.core.common
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
+ * @Project: 
+ * @Author: hllqkb
+ * @Github: https://github.com/hllqkb
  * @Date: 2025/3/30 16:56
  * @Description: * 全局错误码，占用 [0, 999],业务异常错误码，占用 [1 000 000 000, +∞)
  *

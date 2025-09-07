@@ -6,9 +6,9 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * @Project: me.pgthinker.common
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
+ * @Project: 
+ * @Author: hllqkb
+ * @Github: https://github.com/hllqkb
  * @Date: 2024/11/25 01:22
  * @Description:
  */

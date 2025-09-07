@@ -1,9 +1,9 @@
 package core.service.objectstore;
 
 /**
- * @Project: me.pgthinker.service.objectstore
- * @Author: NingNing0111
- * @Github: https://github.com/ningning0111
+ * @Project: 
+ * @Author: hllqkb
+ * @Github: https://github.com/hllqkb
  * @Date: 2025/3/29 02:34
  * @Description:
  */
